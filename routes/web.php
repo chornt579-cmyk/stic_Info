@@ -50,16 +50,19 @@ Route::middleware('auth')->group(function () {
 
         // Departments
         Route::post('/departments', [AdminController::class, 'storeDepartment'])->name('departments.store');
+        Route::put('/departments/{department}', [AdminController::class, 'updateDepartment'])->name('departments.update');
         Route::delete('/departments/{department}', [AdminController::class, 'deleteDepartment'])->name('departments.destroy');
 
         // Classes
         Route::post('/classes', [AdminController::class, 'storeClass'])->name('classes.store');
+        Route::put('/classes/{class}', [AdminController::class, 'updateClass'])->name('classes.update');
         Route::delete('/classes/{class}', [AdminController::class, 'deleteClass'])->name('classes.destroy');
 
-        // Teachers Approval, Rejection & Assignments
+        // User Management (Teachers, Students & Status)
         Route::patch('/teachers/{user}/approve', [AdminController::class, 'approveTeacher'])->name('teachers.approve');
         Route::patch('/teachers/{user}/reject', [AdminController::class, 'rejectTeacher'])->name('teachers.reject');
         Route::patch('/users/{user}/status', [AdminController::class, 'toggleUserStatus'])->name('users.status');
+        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.destroy');
         Route::post('/teachers/{user}/classes', [AdminController::class, 'assignTeacherClasses'])->name('teachers.assign-classes');
 
         // Schedules

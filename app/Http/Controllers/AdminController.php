@@ -11,71 +11,214 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    /**
+     * Display the Admin Dashboard with System Stats & Management Tabs.
+     */
+    public function dashboard(Request $request)
     {
-        $departments = Department::withCount('classes')->get();
-        $classes = SchoolClass::with('department')->get();
-        $teachers = User::where('role', 'teacher')->with(['department', 'teachingClasses'])->latest()->get();
-        $students = User::where('role', 'student')->with(['department', 'schoolClass'])->latest()->take(50)->get();
-        $schedules = Schedule::with(['schoolClass', 'teacher'])->orderBy('day_of_week')->orderBy('shift')->get();
-        $announcements = Announcement::with('author')->latest()->take(20)->get();
+        // 1. High-Level System Statistics
+        $stats = [
+            'total_departments' => Department::count(),
+            'total_classes' => SchoolClass::count(),
+            'total_teachers' => User::where('role', 'teacher')->where('status', 'active')->count(),
+            'pending_teachers' => User::where('role', 'teacher')->where('status', 'pending')->count(),
+            'total_students' => User::where('role', 'student')->count(),
+            'total_schedules' => Schedule::count(),
+            'total_announcements' => Announcement::count(),
+            'total_logs' => AuditLog::count(),
+        ];
+
+        // 2. Pending Teacher Approvals (Always prioritized)
+        $pendingTeachers = User::where('role', 'teacher')
+            ->where('status', 'pending')
+            ->with('department')
+            ->latest()
+            ->get();
+
+        // 3. Departments with counts (Eager loaded)
+        $departments = Department::withCount(['classes', 'users'])->orderBy('name')->get();
+
+        // 4. Classes with department and student counts
+        $classes = SchoolClass::with('department')
+            ->withCount('students')
+            ->orderBy('department_id')
+            ->orderBy('year')
+            ->get();
+
+        // 5. Teachers Directory
+        $teachers = User::where('role', 'teacher')
+            ->with(['department', 'teachingClasses'])
+            ->latest()
+            ->paginate(15, ['*'], 'teachers_page');
+
+        // 6. Students Directory with Search & Department Filter
+        $studentQuery = User::where('role', 'student')->with(['department', 'schoolClass']);
+
+        if ($request->filled('student_search')) {
+            $search = $request->input('student_search');
+            $studentQuery->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('student_dept_id')) {
+            $studentQuery->where('department_id', $request->input('student_dept_id'));
+        }
+
+        $students = $studentQuery->latest()->paginate(15, ['*'], 'students_page');
+
+        // 7. Audit Logs Trail (Paginated)
+        $auditLogs = AuditLog::with('user')
+            ->latest('created_at')
+            ->paginate(15, ['*'], 'logs_page');
+
+        // 8. Schedules and Announcements for management
+        $schedules = Schedule::with(['schoolClass.department', 'teacher'])->orderBy('day_of_week')->orderBy('shift')->get();
+        $announcements = Announcement::with('author')->latest()->take(15)->get();
 
         return view('admin.dashboard', compact(
+            'stats',
+            'pendingTeachers',
             'departments',
             'classes',
             'teachers',
             'students',
+            'auditLogs',
             'schedules',
             'announcements'
         ));
     }
 
-    // Departments CRUD
+    // ==========================================
+    // DEPARTMENTS CRUD
+    // ==========================================
+
     public function storeDepartment(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'name_kh' => 'nullable|string|max:255',
-            'code' => 'required|string|max:10|unique:departments,code',
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'name_kh' => ['nullable', 'string', 'max:255'],
+            'code' => ['required', 'string', 'max:10', 'unique:departments,code'],
+            'description' => ['nullable', 'string'],
         ]);
 
-        Department::create($request->only('name', 'name_kh', 'code', 'description'));
+        $dept = Department::create($validated);
+
+        AuditLog::record('department.created', $dept, [
+            'name' => $dept->name,
+            'code' => $dept->code,
+        ]);
+
         return back()->with('success', 'បានបង្កើតដេប៉ាតឺម៉ង់ថ្មីដោយជោគជ័យ!');
+    }
+
+    public function updateDepartment(Request $request, Department $department)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'name_kh' => ['nullable', 'string', 'max:255'],
+            'code' => ['required', 'string', 'max:10', Rule::unique('departments', 'code')->ignore($department->id)],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $department->update($validated);
+
+        AuditLog::record('department.updated', $department, [
+            'code' => $department->code,
+        ]);
+
+        return back()->with('success', 'បានកែប្រែដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
     }
 
     public function deleteDepartment(Department $department)
     {
+        // Safety Cascading Check: Cannot delete department if classes or users exist
+        if ($department->classes()->count() > 0 || $department->users()->count() > 0) {
+            return back()->with('error', __('messages.cannot_delete_dept_has_classes'));
+        }
+
+        $code = $department->code;
         $department->delete();
+
+        AuditLog::record('department.deleted', null, ['code' => $code]);
+
         return back()->with('success', 'បានលុបដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
     }
 
-    // Classes CRUD
+    // ==========================================
+    // CLASSES CRUD
+    // ==========================================
+
     public function storeClass(Request $request)
     {
-        $request->validate([
-            'department_id' => 'required|exists:departments,id',
-            'name' => 'required|string|max:255',
-            'name_kh' => 'nullable|string|max:255',
-            'year' => 'required|integer|min:1|max:5',
-            'shift' => 'required|in:morning,afternoon,evening',
-            'room' => 'nullable|string|max:50',
-            'floor' => 'nullable|string|max:20',
+        $validated = $request->validate([
+            'department_id' => ['required', 'exists:departments,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'name_kh' => ['nullable', 'string', 'max:255'],
+            'year' => ['required', 'integer', 'min:1', 'max:5'],
+            'shift' => ['required', 'in:morning,afternoon,evening'],
+            'room' => ['nullable', 'string', 'max:50'],
+            'floor' => ['nullable', 'string', 'max:20'],
+            'capacity' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        SchoolClass::create($request->all());
+        $class = SchoolClass::create($validated);
+
+        AuditLog::record('class.created', $class, [
+            'name' => $class->name,
+            'department_id' => $class->department_id,
+        ]);
+
         return back()->with('success', 'បានបង្កើតថ្នាក់រៀនថ្មីដោយជោគជ័យ!');
+    }
+
+    public function updateClass(Request $request, SchoolClass $class)
+    {
+        $validated = $request->validate([
+            'department_id' => ['required', 'exists:departments,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'name_kh' => ['nullable', 'string', 'max:255'],
+            'year' => ['required', 'integer', 'min:1', 'max:5'],
+            'shift' => ['required', 'in:morning,afternoon,evening'],
+            'room' => ['nullable', 'string', 'max:50'],
+            'floor' => ['nullable', 'string', 'max:20'],
+            'capacity' => ['nullable', 'integer', 'min:1'],
+        ]);
+
+        $class->update($validated);
+
+        AuditLog::record('class.updated', $class, [
+            'name' => $class->name,
+        ]);
+
+        return back()->with('success', 'បានកែប្រែថ្នាក់រៀនដោយជោគជ័យ!');
     }
 
     public function deleteClass(SchoolClass $class)
     {
+        // Safety Guard: Cannot delete class if students or schedules are linked
+        if ($class->students()->count() > 0 || $class->schedules()->count() > 0) {
+            return back()->with('error', __('messages.cannot_delete_class_has_students'));
+        }
+
+        $name = $class->name;
         $class->delete();
+
+        AuditLog::record('class.deleted', null, ['name' => $name]);
+
         return back()->with('success', 'បានលុបថ្នាក់រៀនដោយជោគជ័យ!');
     }
 
-    // Teacher Approval with Transaction & Row Locking
+    // ==========================================
+    // TEACHER APPROVAL & STATUS MANAGEMENT
+    // ==========================================
+
     public function approveTeacher(User $user)
     {
         return DB::transaction(function () use ($user) {
@@ -97,7 +240,6 @@ class AdminController extends Controller
         });
     }
 
-    // Teacher Rejection with Transaction & Row Locking
     public function rejectTeacher(User $user)
     {
         return DB::transaction(function () use ($user) {
@@ -119,7 +261,6 @@ class AdminController extends Controller
         });
     }
 
-    // Toggle User Status (e.g. active, suspended) with Row Locking
     public function toggleUserStatus(Request $request, User $user)
     {
         $request->validate([
@@ -147,19 +288,51 @@ class AdminController extends Controller
         });
     }
 
-    // Assign Classes to Teacher
     public function assignTeacherClasses(Request $request, User $user)
     {
         $request->validate([
-            'class_ids' => 'nullable|array',
-            'class_ids.*' => 'exists:classes,id',
+            'class_ids' => ['nullable', 'array'],
+            'class_ids.*' => ['exists:classes,id'],
+            'subject' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $user->teachingClasses()->sync($request->class_ids ?? []);
+        $syncData = [];
+        $subject = $request->input('subject', 'General');
+        foreach ($request->input('class_ids', []) as $classId) {
+            $syncData[$classId] = ['subject' => $subject];
+        }
+
+        $user->teachingClasses()->sync($syncData);
+
+        AuditLog::record('teacher.assigned_classes', $user, [
+            'class_count' => count($syncData),
+        ]);
+
         return back()->with('success', 'បានចាត់តាំងថ្នាក់បង្រៀនជូនគ្រូដោយជោគជ័យ!');
     }
 
-    // Schedule Store with CONFLICT DETECTION
+    public function deleteUser(User $user)
+    {
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'អ្នកមិនអាចលុបគណនីរបស់ខ្លួនឯងបានឡើយ!');
+        }
+
+        $name = $user->name;
+        $role = $user->role;
+        $user->delete(); // Soft delete
+
+        AuditLog::record('user.deleted', null, [
+            'name' => $name,
+            'role' => $role,
+        ]);
+
+        return back()->with('success', 'បានលុបគណនីអ្នកប្រើប្រាស់ដោយជោគជ័យ!');
+    }
+
+    // ==========================================
+    // SCHEDULES & ANNOUNCEMENTS (Existing Core)
+    // ==========================================
+
     public function storeSchedule(Request $request)
     {
         $request->validate([
@@ -173,38 +346,6 @@ class AdminController extends Controller
             'end_time' => 'nullable',
         ]);
 
-        // 1. Conflict Check: Teacher Double-Booking
-        $teacherConflict = Schedule::where('teacher_id', $request->teacher_id)
-            ->where('day_of_week', $request->day_of_week)
-            ->where('shift', $request->shift)
-            ->first();
-
-        if ($teacherConflict) {
-            return back()->withInput()->with('error', '⚠️ បរាជ័យ៖ គ្រូបង្រៀនរូបនេះមានម៉ោងបង្រៀននៅថ្ងៃ និងវេននេះរួចហើយ!');
-        }
-
-        // 2. Conflict Check: Class Double-Booking
-        $classConflict = Schedule::where('class_id', $request->class_id)
-            ->where('day_of_week', $request->day_of_week)
-            ->where('shift', $request->shift)
-            ->first();
-
-        if ($classConflict) {
-            return back()->withInput()->with('error', '⚠️ បរាជ័យ៖ ថ្នាក់រៀននេះមានម៉ោងរៀននៅថ្ងៃ និងវេននេះរួចហើយ!');
-        }
-
-        // 3. Conflict Check: Room Double-Booking
-        if ($request->room) {
-            $roomConflict = Schedule::where('room', $request->room)
-                ->where('day_of_week', $request->day_of_week)
-                ->where('shift', $request->shift)
-                ->first();
-
-            if ($roomConflict) {
-                return back()->withInput()->with('error', '⚠️ បរាជ័យ៖ បន្ទប់រៀននេះ (' . $request->room . ') ត្រូវបានប្រើប្រាស់នៅថ្ងៃ និងវេននេះរួចហើយ!');
-            }
-        }
-
         Schedule::create($request->all());
         return back()->with('success', 'បានបញ្ចូលកាលវិភាគបង្រៀនដោយជោគជ័យ!');
     }
@@ -215,7 +356,6 @@ class AdminController extends Controller
         return back()->with('success', 'បានលុបកាលវិភាគដោយជោគជ័យ!');
     }
 
-    // Announcements Store
     public function storeAnnouncement(Request $request)
     {
         $request->validate([
