@@ -1,0 +1,25 @@
+{
+  "name": "stic-info",
+  "version": "1.0.0",
+  "description": "STIC Info — ព័ត៌មាន និងកាលវិភាគ — STIC Siem Reap",
+  "private": true,
+  "scripts": {
+    "start":        "firebase emulators:start --import=.emulator-data --export-on-exit=.emulator-data",
+    "emulate":      "firebase emulators:start",
+    "emulate:fresh": "firebase emulators:start --project demo-stic",
+    "seed":         "bash scripts/seed-data.sh demo-stic",
+    "deploy":       "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:rules": "firebase deploy --only firestore",
+    "deploy:functions": "firebase deploy --only functions",
+    "functions:install": "cd functions && npm install",
+    "setup":        "npm install -g firebase-tools && npm run functions:install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["stic", "school", "schedule", "firebase", "khmer"],
+  "author": "chornt579-cmyk",
+  "license": "MIT"
+}
+

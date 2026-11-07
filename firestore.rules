@@ -1,0 +1,124 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ───────────────────────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isTeacher() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
+    }
+
+    function isStudent() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'student';
+    }
+
+    function currentUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isApprovedTeacher() {
+      return isTeacher() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved';
+    }
+
+    // ─── /departments/{deptId} ──────────────────────────────────────────────────
+    // Any authenticated user can read; only Admin can write.
+    match /departments/{deptId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── /classes/{classId} ─────────────────────────────────────────────────────
+    // Any authenticated user can read; only Admin can write.
+    match /classes/{classId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── /users/{uid} ───────────────────────────────────────────────────────────
+    // - User can read their own document.
+    // - Admin can read and write all user documents.
+    // - User can update ONLY their own `phone` field (and no other fields change).
+    match /users/{uid} {
+      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+
+      allow create: if isAuthenticated() && request.auth.uid == uid
+        && request.resource.data.keys().hasAll(['role', 'name', 'email', 'status', 'createdAt']);
+
+      // User updating only their own phone field
+      allow update: if isAuthenticated() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['phone']);
+
+      // Admin can update anything
+      allow update: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ─── /schedules/{scheduleId} ────────────────────────────────────────────────
+    // Any authenticated user can read; only Admin can write.
+    match /schedules/{scheduleId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── /announcements/{annId} ─────────────────────────────────────────────────
+    // Complex visibility rules per role.
+    match /announcements/{annId} {
+
+      // Admin can read everything
+      allow read: if isAdmin();
+
+      // Student visibility: public, all_students, their class, their dept (NOT teacher-only)
+      allow read: if isStudent() && (
+        resource.data.targetType == 'public' ||
+        resource.data.targetType == 'all_students' ||
+        (resource.data.targetType == 'class' &&
+          resource.data.targetId == currentUserData().classId) ||
+        (resource.data.targetType == 'dept_students' &&
+          resource.data.targetId == currentUserData().deptId)
+      ) && resource.data.teacherOnly != true;
+
+      // Teacher visibility: public, teacher-targeted, their class/dept announcements
+      allow read: if isApprovedTeacher() && (
+        resource.data.targetType == 'public' ||
+        resource.data.targetType == 'all_teachers' ||
+        resource.data.targetType == 'all_students' ||
+        (resource.data.targetType == 'dept_teachers' &&
+          resource.data.targetId == currentUserData().deptId) ||
+        (resource.data.targetType == 'class' &&
+          resource.data.targetId in currentUserData().teacherClasses) ||
+        resource.data.authorId == request.auth.uid
+      );
+
+      // Admin can create any announcement
+      allow create: if isAdmin();
+
+      // Teacher can create announcements: authorId must be their uid,
+      // target must be one of their assigned classes
+      allow create: if isApprovedTeacher() &&
+        request.resource.data.authorId == request.auth.uid &&
+        request.resource.data.keys().hasAll(['authorId', 'targetType', 'targetId', 'message', 'createdAt']) &&
+        (
+          request.resource.data.targetType == 'class' &&
+          request.resource.data.targetId in currentUserData().teacherClasses
+        );
+
+      allow update, delete: if isAdmin();
+
+      // Teacher can delete their own announcements
+      allow delete: if isApprovedTeacher() && resource.data.authorId == request.auth.uid;
+    }
+  }
+}
