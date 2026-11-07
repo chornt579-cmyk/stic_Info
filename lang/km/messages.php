@@ -177,6 +177,19 @@ return [
     'tab_classes' => 'ថ្នាក់បង្រៀន & សិស្ស',
     'tab_announcements' => 'ការផ្សាយដំណឹង',
     'tab_profile' => 'ព័ត៌មានផ្ទាល់ខ្លួន & សុវត្ថិភាព',
+    // Student Portal
+    'student_dashboard_title' => 'ផ្ទាំងគ្រប់គ្រងសិស្ស/និស្សិត (Student Portal)',
+    'student_greeting' => 'សួស្តី សិស្ស/និស្សិត',
+    'student_id' => 'អត្តលេខសិស្ស',
+    'tab_my_class' => 'ថ្នាក់រៀន & មិត្តរួមថ្នាក់',
+    'classmates_count' => 'មិត្តរួមថ្នាក់សរុប',
+    'privacy_protected' => 'ព័ត៌មានទំនាក់ទំនងរបស់សិស្សត្រូវបានការពារដោយគោលការណ៍ឯកជនភាព',
+    'no_class_assigned_notice' => 'គណនីរបស់អ្នកមិនទាន់ត្រូវបានភ្ជាប់ទៅកាន់ថ្នាក់រៀនណាមួយនៅឡើយទេ សូមទាក់ទងមកកាន់ការិយាល័យ ឬដេប៉ាតឺម៉ង់របស់អ្នក។',
+    'teacher_name' => 'លោកគ្រូ/អ្នកគ្រូ',
+    'announcement_type_public' => 'ដំណឹងទូទៅ',
+    'announcement_type_all_students' => 'ដំណឹងសិស្សទាំងអស់',
+    'announcement_type_dept_students' => 'ដំណឹងដេប៉ាតឺម៉ង់',
+    'announcement_type_class' => 'ដំណឹងថ្នាក់រៀន',
     'access_denied' => 'អ្នកមិនមានសិទ្ធិចូលមើលទំព័រនេះឡើយ (Unauthorized Access)។',
 ];
 

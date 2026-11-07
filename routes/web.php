@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     // Student Routes
     Route::middleware('role:student')->prefix('student')->name('student.')->group(function () {
         Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
+        Route::put('/profile', [StudentController::class, 'updateProfile'])->name('profile.update');
     });
 
     // Teacher Routes

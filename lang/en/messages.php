@@ -177,6 +177,19 @@ return [
     'tab_classes' => 'Classes & Students',
     'tab_announcements' => 'Announcements',
     'tab_profile' => 'Profile & Security',
+    // Student Portal
+    'student_dashboard_title' => 'Student Portal',
+    'student_greeting' => 'Welcome, Student',
+    'student_id' => 'Student ID',
+    'tab_my_class' => 'My Class & Classmates',
+    'classmates_count' => 'Total Classmates',
+    'privacy_protected' => 'Student personal contact details are protected under data privacy policy',
+    'no_class_assigned_notice' => 'Your account has not been assigned to a class yet. Please contact your department administration.',
+    'teacher_name' => 'Teacher',
+    'announcement_type_public' => 'General Notice',
+    'announcement_type_all_students' => 'All Students Notice',
+    'announcement_type_dept_students' => 'Department Notice',
+    'announcement_type_class' => 'Class Notice',
     'access_denied' => 'You do not have permission to access this page (Unauthorized Access).',
 ];
 
