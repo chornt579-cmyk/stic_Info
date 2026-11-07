@@ -1,22 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'រង់ចាំការអនុម័ត — STIC Info')
+@section('title', __('messages.pending_approval_title') . ' — STIC Info')
 
 @section('content')
-<div style="max-width: 550px; margin: 3rem auto; text-align: center;">
-    <div class="card" style="padding: 3rem 2rem;">
+<div style="max-width: 550px; margin: 3rem auto; text-align: center; width: 100%;">
+    <div class="card" style="padding: 3rem 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); background: #ffffff;">
         <div style="font-size: 3.5rem; margin-bottom: 1rem;">⏳</div>
-        <h2 style="font-size: 1.5rem; color: var(--dark); margin-bottom: 0.8rem;">
-            គណនីកំពុងរង់ចាំការអនុម័ត (Pending Approval)
-        </h2>
-        <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 2rem;">
-            សូមអរគុណលោកគ្រូ/អ្នកគ្រូ <strong>{{ Auth::user()->name }}</strong> សម្រាប់ការចុះឈ្មោះ! គណនីគ្រូបង្រៀនត្រូវទទួលបានការអនុម័ត និងចាត់តាំងថ្នាក់បង្រៀនពីអ្នកគ្រប់គ្រង (Admin) ជាមុនសិន ទើបអាចចូលប្រើប្រាស់បាន។
+        <h1 style="font-size: 1.45rem; font-weight: 700; color: #1e293b; margin-bottom: 0.8rem;">
+            {{ __('messages.pending_approval_title') }}
+        </h1>
+        <p style="color: #64748b; font-size: 0.98rem; line-height: 1.6; margin-bottom: 2rem;">
+            {{ __('messages.pending_approval_desc') }}
         </p>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="btn btn-secondary">ចាកចេញពីប្រព័ន្ធ (Logout)</button>
+            <button type="submit" class="btn btn-secondary" style="padding: 0.65rem 1.75rem; font-weight: 600;">
+                {{ __('messages.logout') }}
+            </button>
         </form>
     </div>
 </div>
 @endsection
-

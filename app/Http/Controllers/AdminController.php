@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\AuditLog;
 use App\Models\Department;
 use App\Models\Schedule;
 use App\Models\SchoolClass;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -73,19 +75,76 @@ class AdminController extends Controller
         return back()->with('success', 'បានលុបថ្នាក់រៀនដោយជោគជ័យ!');
     }
 
-    // Teacher Approval
+    // Teacher Approval with Transaction & Row Locking
     public function approveTeacher(User $user)
     {
-        if (!$user->isTeacher()) {
-            return back()->with('error', 'អ្នកប្រើប្រាស់នេះមិនមែនជាគ្រូបង្រៀនឡើយ!');
-        }
+        return DB::transaction(function () use ($user) {
+            /** @var User $lockedUser */
+            $lockedUser = User::where('id', $user->id)->lockForUpdate()->firstOrFail();
 
-        $user->update([
-            'status' => 'active',
-            'approved_at' => now(),
+            if (!$lockedUser->isTeacher()) {
+                return back()->with('error', 'អ្នកប្រើប្រាស់នេះមិនមែនជាគ្រូបង្រៀនឡើយ!');
+            }
+
+            $lockedUser->approve();
+
+            AuditLog::record('teacher.approved', $lockedUser, [
+                'teacher_name' => $lockedUser->name,
+                'teacher_email' => $lockedUser->email,
+            ]);
+
+            return back()->with('success', 'បានអនុម័តគ្រូបង្រៀនដោយជោគជ័យ!');
+        });
+    }
+
+    // Teacher Rejection with Transaction & Row Locking
+    public function rejectTeacher(User $user)
+    {
+        return DB::transaction(function () use ($user) {
+            /** @var User $lockedUser */
+            $lockedUser = User::where('id', $user->id)->lockForUpdate()->firstOrFail();
+
+            if (!$lockedUser->isTeacher()) {
+                return back()->with('error', 'អ្នកប្រើប្រាស់នេះមិនមែនជាគ្រូបង្រៀនឡើយ!');
+            }
+
+            $lockedUser->reject();
+
+            AuditLog::record('teacher.rejected', $lockedUser, [
+                'teacher_name' => $lockedUser->name,
+                'teacher_email' => $lockedUser->email,
+            ]);
+
+            return back()->with('success', 'បានបដិសេធសំណើសុំរបស់គ្រូបង្រៀនដោយជោគជ័យ!');
+        });
+    }
+
+    // Toggle User Status (e.g. active, suspended) with Row Locking
+    public function toggleUserStatus(Request $request, User $user)
+    {
+        $request->validate([
+            'status' => ['required', 'in:active,suspended'],
         ]);
 
-        return back()->with('success', 'បានអនុម័តគ្រូបង្រៀនដោយជោគជ័យ!');
+        return DB::transaction(function () use ($request, $user) {
+            /** @var User $lockedUser */
+            $lockedUser = User::where('id', $user->id)->lockForUpdate()->firstOrFail();
+
+            if ($lockedUser->id === Auth::id()) {
+                return back()->with('error', 'អ្នកមិនអាចផ្អាកគណនីផ្ទាល់ខ្លួនរបស់អ្នកបានឡើយ!');
+            }
+
+            $oldStatus = $lockedUser->status;
+            $lockedUser->status = $request->status;
+            $lockedUser->save();
+
+            AuditLog::record('user.status_changed', $lockedUser, [
+                'old_status' => $oldStatus,
+                'new_status' => $request->status,
+            ]);
+
+            return back()->with('success', 'បានកែប្រែស្ថានភាពអ្នកប្រើប្រាស់ដោយជោគជ័យ!');
+        });
     }
 
     // Assign Classes to Teacher

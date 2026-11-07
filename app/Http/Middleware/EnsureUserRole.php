@@ -53,6 +53,12 @@ class EnsureUserRole
 
         // 2. Role enforcement
         if (!in_array($user->role, $roles, true)) {
+            \App\Models\AuditLog::record('auth.unauthorized_attempt', null, [
+                'user_role' => $user->role,
+                'required_roles' => $roles,
+                'path' => $request->path(),
+            ]);
+
             abort(403, __('messages.access_denied'));
         }
 
