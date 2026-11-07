@@ -50,6 +50,7 @@
      - For SQLite: Validate uniqueness with `Rule::unique('users')->whereNull('deleted_at')` in Form Requests.
    - Soft deletes must **NEVER** be applied to `audit_logs` (logs are permanent and immutable).
 5. **Timetable Architecture & Conflict Prevention:**
+   - **Full Week Coverage (Monday to Sunday):** Timetable scheduling MUST fully support all 7 days of the week (`monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`, `sunday`) to cover both standard weekday curriculum and weekend technical courses.
    - **Room Entity:** Use `room_id` (foreign key to `rooms` table) instead of a plain string.
    - **Conflict Lookup Composite Indexes:**
      - `schedules (teacher_id, day_of_week)`
