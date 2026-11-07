@@ -50,3 +50,4 @@ class UserPolicy
         return $user->id === $targetUser->id || $user->isAdmin();
     }
 }
+

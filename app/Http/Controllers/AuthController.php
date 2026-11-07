@@ -114,6 +114,11 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        // Anti-bot honeypot check
+        if ($request->filled('spambot_trap')) {
+            return back();
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -123,11 +128,22 @@ class AuthController extends Controller
                 'max:255',
                 Rule::unique('users')->whereNull('deleted_at'), // Respect soft deletes
             ],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'password' => [
+                'required',
+                'string',
+                Password::min(8)->letters()->numbers(),
+                'confirmed',
+            ],
+            'phone' => ['nullable', 'string', 'max:20', 'regex:/^[0-9\s\-\+\(\)]{8,20}$/'],
             'role' => ['required', Rule::in(['student', 'teacher'])],
             'department_id' => ['required', 'exists:departments,id'],
-            'class_id' => ['nullable', 'required_if:role,student', 'exists:classes,id'],
+            'class_id' => [
+                'nullable',
+                'required_if:role,student',
+                Rule::exists('classes', 'id')->where(function ($query) use ($request) {
+                    return $query->where('department_id', $request->department_id);
+                }),
+            ],
         ]);
 
         $status = ($request->role === 'teacher') ? 'pending' : 'active';
@@ -139,7 +155,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
             'department_id' => $request->department_id,
-            'class_id' => $request->class_id,
+            'class_id' => ($request->role === 'student') ? $request->class_id : null,
         ]);
         $user->role = $request->role;
         $user->status = $status;
@@ -227,33 +243,43 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle Password Reset link creation.
+     * Handle Password Reset link creation with user enumeration prevention.
      */
     public function sendResetLink(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
+            'email' => ['required', 'string', 'email'],
         ]);
 
-        $token = Str::random(64);
+        $user = User::where('email', $request->email)->first();
 
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $request->email],
-            [
-                'token' => Hash::make($token),
-                'created_at' => now(),
-            ]
-        );
+        if ($user) {
+            $token = Str::random(64);
 
-        AuditLog::record('auth.password_reset_requested', null, [
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->email],
+                [
+                    'token' => Hash::make($token),
+                    'created_at' => now(),
+                ]
+            );
+
+            AuditLog::record('auth.password_reset_requested', $user, [
+                'email' => $request->email,
+            ]);
+
+            $resetUrl = route('password.reset', ['token' => $token, 'email' => $request->email]);
+
+            return back()->with('status', __('messages.reset_link_sent'))
+                ->with('dev_reset_url', $resetUrl);
+        }
+
+        AuditLog::record('auth.password_reset_unregistered_attempt', null, [
             'email' => $request->email,
         ]);
 
-        // Provide direct reset route link in session for demonstration/development
-        $resetUrl = route('password.reset', ['token' => $token, 'email' => $request->email]);
-
-        return back()->with('status', 'តំណភ្ជាប់សម្រាប់កំណត់លេខសម្ងាត់ឡើងវិញត្រូវបានបង្កើត!')
-            ->with('dev_reset_url', $resetUrl);
+        // Always return identical message to avoid user enumeration
+        return back()->with('status', __('messages.reset_link_sent'));
     }
 
     /**

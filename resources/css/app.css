@@ -7,3 +7,89 @@
 @theme {
     --font-sans: 'Noto Sans Khmer', 'Roboto', ui-sans-serif, system-ui, sans-serif;
 }
+
+/* Accessibility & Auth Tabs UI */
+.tab-active {
+    border-bottom: 3px solid #1a73e8 !important;
+    color: #1a73e8 !important;
+    font-weight: 700 !important;
+}
+
+.tab-inactive {
+    border-bottom: 3px solid transparent !important;
+    color: #64748b !important;
+    font-weight: 500 !important;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.85rem;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.2s, border-color 0.2s;
+    outline-offset: -2px;
+}
+
+.tab-btn:focus-visible {
+    outline: 2px solid #1a73e8;
+}
+
+/* Input wrappers with password reveal */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-wrapper input {
+    padding-right: 2.75rem;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: #64748b;
+    border-radius: 4px;
+}
+
+.password-toggle-btn:focus-visible {
+    outline: 2px solid #1a73e8;
+}
+
+/* Accessible Form Errors */
+.field-error {
+    display: block;
+    color: #ea4335;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-top: 0.35rem;
+    line-height: 1.4;
+}
+
+.input-invalid {
+    border-color: #ea4335 !important;
+    background-color: #fef2f2 !important;
+}
+
+.input-invalid:focus {
+    box-shadow: 0 0 0 2px rgba(234, 67, 53, 0.25) !important;
+}
+
+/* Hidden honeypot */
+.spambot-trap {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+}

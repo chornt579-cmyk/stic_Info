@@ -370,4 +370,75 @@ class AuthTest extends TestCase
         $this->assertEquals(2, User::withTrashed()->where('email', 'reusable@stic.edu.kh')->count());
         $this->assertEquals(1, User::where('email', 'reusable@stic.edu.kh')->count());
     }
+
+    public function test_student_cannot_register_with_class_from_different_department(): void
+    {
+        $otherDept = Department::create([
+            'name' => 'Civil Engineering',
+            'code' => 'CE',
+        ]);
+
+        $otherClass = SchoolClass::create([
+            'department_id' => $otherDept->id,
+            'name' => 'CE Year 1',
+            'year' => 1,
+            'shift' => 'morning',
+        ]);
+
+        // Attempt to register under IT department but with CE class
+        $response = $this->post('/register', [
+            'name' => 'Mismatched Student',
+            'email' => 'mismatch@stic.edu.kh',
+            'password' => 'secret1234',
+            'password_confirmation' => 'secret1234',
+            'role' => 'student',
+            'department_id' => $this->department->id,
+            'class_id' => $otherClass->id,
+        ]);
+
+        $response->assertSessionHasErrors('class_id');
+        $this->assertDatabaseMissing('users', ['email' => 'mismatch@stic.edu.kh']);
+    }
+
+    public function test_registration_rejects_admin_or_invalid_role(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Fake Admin',
+            'email' => 'fakeadmin@stic.edu.kh',
+            'password' => 'secret1234',
+            'password_confirmation' => 'secret1234',
+            'role' => 'admin', // Forged role from DevTools
+            'department_id' => $this->department->id,
+        ]);
+
+        $response->assertSessionHasErrors('role');
+        $this->assertDatabaseMissing('users', ['email' => 'fakeadmin@stic.edu.kh']);
+    }
+
+    public function test_password_reset_request_does_not_reveal_unregistered_email(): void
+    {
+        $response = $this->post('/forgot-password', [
+            'email' => 'doesnotexist@stic.edu.kh',
+        ]);
+
+        // Must return positive status message to prevent enumeration
+        $response->assertSessionHas('status', __('messages.reset_link_sent'));
+        $response->assertSessionMissing('dev_reset_url');
+    }
+
+    public function test_registration_rejects_weak_password(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Weak Pass User',
+            'email' => 'weakpass@stic.edu.kh',
+            'password' => 'onlyletters',
+            'password_confirmation' => 'onlyletters',
+            'role' => 'student',
+            'department_id' => $this->department->id,
+            'class_id' => $this->schoolClass->id,
+        ]);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertDatabaseMissing('users', ['email' => 'weakpass@stic.edu.kh']);
+    }
 }
