@@ -1,14 +1,29 @@
-// TODO: Replace with your Firebase project config from Firebase Console
-// Project Settings > General > Your apps > Firebase SDK snippet > Config
+// Firebase Configuration
+// If on localhost / codespaces, it connects automatically to Firebase Emulators!
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "demo-api-key",
+  authDomain: "demo-stic.firebaseapp.com",
+  projectId: "demo-stic",
+  storageBucket: "demo-stic.appspot.com",
+  messagingSenderId: "1234567890",
+  appId: "1:1234567890:web:demo"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
+
+// Automatically connect to local Firebase Emulators when running locally or on Codespaces
+if (
+  location.hostname === "localhost" ||
+  location.hostname === "127.0.0.1" ||
+  location.hostname.endsWith(".app.github.dev")
+) {
+  console.log("🔧 Connecting to Firebase Local Emulators...");
+  
+  // Connect Firestore Emulator (port 8080)
+  db.useEmulator(location.hostname.endsWith(".app.github.dev") ? location.hostname : "localhost", 8080);
+  
+  // Connect Auth Emulator (port 9099)
+  auth.useEmulator(`http://${location.hostname.endsWith(".app.github.dev") ? location.hostname : "localhost"}:9099`);
+}
