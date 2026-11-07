@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:teacher')->prefix('teacher')->name('teacher.')->group(function () {
         Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
         Route::post('/announcements', [TeacherController::class, 'storeAnnouncement'])->name('announcements.store')->middleware('throttle:10,60');
+        Route::delete('/announcements/{announcement}', [TeacherController::class, 'destroyAnnouncement'])->name('announcements.destroy');
+        Route::put('/profile', [TeacherController::class, 'updateProfile'])->name('profile.update');
     });
 
     // Admin Routes
