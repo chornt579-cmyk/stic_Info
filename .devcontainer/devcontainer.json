@@ -9,8 +9,8 @@
   },
 
   // Setup commands
-  "postCreateCommand": "cd stic-laravel && composer install && cp -n .env.example .env && php artisan key:generate && php artisan migrate --force && php artisan db:seed --force",
-  "postStartCommand": "echo '🚀 Laravel STIC Info ready! Run: cd stic-laravel && php artisan serve'",
+  "postCreateCommand": "composer install && cp -n .env.example .env && php artisan key:generate && php artisan migrate --force && php artisan db:seed --force",
+  "postStartCommand": "echo '🚀 Laravel STIC Info ready! Run: php artisan serve'",
 
   "customizations": {
     "vscode": {

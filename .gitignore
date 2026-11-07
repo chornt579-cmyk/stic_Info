@@ -1,38 +1,31 @@
-# ── Node / npm ────────────────────────────────────
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# ── Firebase ──────────────────────────────────────
-.firebase/
-firebase-debug.log
-firestore-debug.log
-ui-debug.log
-functions-debug.log
-.firebaserc.local
-
-# ── Environment / Secrets ─────────────────────────
-.env
-.env.local
-.env.*.local
-*.secret
-
-# ── OS files ──────────────────────────────────────
+database/*.sqlite
+database/*.sqlite-journal
+database/*.sqlite-wal
+database/*.sqlite-shm
+*.log
 .DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.codex
+/.cursor/
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+_ide_helper.php
+Homestead.json
+Homestead.yaml
 Thumbs.db
-desktop.ini
-
-# ── Editor ────────────────────────────────────────
-.vscode/settings.json
-.idea/
-*.swp
-*.swo
-
-# ── Build outputs ─────────────────────────────────
-dist/
-build/
-
-# ── Emulator data ─────────────────────────────────
-.emulator-data/
-

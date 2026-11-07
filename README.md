@@ -1,90 +1,60 @@
 # STIC Info 🎓
 
-**ប្រព័ន្ធព័ត៌មាន និងកាលវិភាគ STIC Siem Reap Polytechnic Institute**  
-School information & schedule management system for students, teachers, and administrators.
+**ប្រព័ន្ធព័ត៌មាន និងកាលវិភាគវិទ្យាស្ថានពហុបច្ចេកទេសភូមិភាគតេជោសែនសៀមរាប**  
+*School Information and Timetable Management System for Techo Sen Regional Polytechnic Institute of Siem Reap (STIC)*
 
 ---
 
-## Overview
+## 📌 Project Overview
+STIC Info is a production-oriented web management platform built with **Laravel 13**, **Tailwind CSS**, and **Blade Templates**. It centralizes academic scheduling, departmental organization, student administration, and targeted campus announcements.
 
-STIC Info is a web application built for **STIC Siem Reap** that centralises scheduling and announcements for all three user groups:
-
-| Role | Khmer | Capabilities |
-|------|-------|-------------|
-| **Student** | សិស្ស | View today's & weekly schedule, receive announcements |
-| **Teacher** | គ្រូ | View teaching schedule, send class announcements |
-| **Admin** | អ្នកគ្រប់គ្រង | Full CRUD: departments, classes, users, schedules, announcements |
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | HTML5, CSS3, Vanilla JavaScript (ES6+) |
-| Fonts | Noto Sans Khmer + Roboto (Google Fonts) |
-| Backend | Firebase Firestore (NoSQL) |
-| Auth | Firebase Authentication (Email/Password) |
-| Hosting | Firebase Hosting |
-| Functions | Firebase Cloud Functions (Node.js 18) |
-| Notifications | Telegram Bot API |
+- **Primary Scope:** Web Application only (responsive across Desktop, Laptop, Tablet, Mobile).
+- **Backend Framework:** Laravel 13 (PHP 8.2+)
+- **Database:** SQLite (Local Development) / PostgreSQL (Production)
+- **Frontend:** Blade Templates + Tailwind CSS + Vite
+- **Localization:** Bilingual (Khmer `km` & English `en`)
+- **Official Timezone:** `Asia/Phnom_Penh`
 
 ---
 
-## Key Features
+## 🚀 Getting Started
 
-- 📅 **Real-time schedule** — Today's class, teacher, floor/room, time
-- 🗓 **Weekly schedule** — Full week view grouped by day
-- 📢 **Smart announcements** — Targeted by class, department, role
-- 🔒 **Role-based access** — Firestore Security Rules enforce visibility
-- ⚠ **Conflict detection** — Prevents double-booking of teacher/class/room
-- 📱 **Telegram Bot** — Push notifications for new announcements
-- 🌐 **Bilingual** — Khmer + English throughout
-- 🛡 **XSS Protection** — All HTML output escaped
+### 1. Requirements
+- PHP 8.2 or higher
+- Composer 2.x
+- Node.js 18+ & npm
 
----
-
-## Quick Start
-
+### 2. Setup Instructions
 ```bash
-# 1. Install Firebase CLI
-npm install -g firebase-tools
+# Clone the repository
+git clone <repo-url>
+cd stic_Info
 
-# 2. Login
-firebase login
+# Install backend dependencies
+composer install
 
-# 3. Configure your project ID in .firebaserc and firebase-config.js
+# Prepare environment file
+cp .env.example .env
+php artisan key:generate
 
-# 4. Deploy
-firebase deploy
+# Install and build frontend assets
+npm install
+npm run build
+
+# Run database migrations and seeders (local only)
+php artisan migrate --seed
+
+# Start development server
+php artisan serve
 ```
 
-👉 **See [SETUP.md](SETUP.md) for the complete setup guide (Khmer + English)**
-
----
-
-## Project Structure
-
-```
-public/
-├── index.html          # Landing page (public)
-├── app.html            # Main app (authenticated)
-├── css/style.css       # Complete stylesheet
-└── js/
-    ├── firebase-config.js    # ← Update with your config
-    ├── auth.js
-    ├── dashboard-student.js
-    ├── dashboard-teacher.js
-    └── dashboard-admin.js
-functions/
-├── index.js            # Cloud Functions (Telegram, deleteUser)
-└── package.json
-firestore.rules         # Security Rules
-firestore.indexes.json  # Composite indexes
+### 3. Create Production Administrator
+For secure environments, create an admin account directly from CLI:
+```bash
+php artisan stic:create-admin
 ```
 
 ---
 
-## License
-
-MIT — STIC Siem Reap Polytechnic Institute, 2024
+## 🏛️ Governance & Development Rules
+Refer to [`AGENTS.md`](./AGENTS.md) for strict branching, database safety rules, audit logging, student privacy rules, and Definition of Done (DoD).
