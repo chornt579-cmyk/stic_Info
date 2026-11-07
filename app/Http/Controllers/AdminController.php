@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendTelegramNotificationJob;
 use App\Models\Announcement;
 use App\Models\AuditLog;
 use App\Models\Department;
@@ -469,20 +470,35 @@ class AdminController extends Controller
 
     public function storeAnnouncement(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'target_type' => 'required|in:public,all_students,class,dept_students,all_teachers,dept_teachers',
             'target_id' => 'nullable|integer',
+            'send_telegram' => 'nullable|boolean',
         ]);
 
-        Announcement::create([
+        $announcement = Announcement::create([
             'author_id' => Auth::id(),
-            'title' => $request->title,
-            'content' => $request->content,
-            'target_type' => $request->target_type,
-            'target_id' => $request->target_id,
+            'title' => strip_tags($validated['title']),
+            'content' => strip_tags($validated['content']),
+            'target_type' => $validated['target_type'],
+            'target_id' => $validated['target_id'] ?? null,
+            'is_telegram_sent' => false,
         ]);
+
+        AuditLog::record('announcement.created', $announcement, [
+            'title' => $announcement->title,
+            'target_type' => $announcement->target_type,
+        ]);
+
+        // Dispatch background queue job for Telegram notification if requested or public
+        if ($request->boolean('send_telegram') || in_array($announcement->target_type, ['public', 'all_students'])) {
+            SendTelegramNotificationJob::dispatch($announcement);
+            AuditLog::record('telegram.broadcast_dispatched', $announcement, [
+                'title' => $announcement->title,
+            ]);
+        }
 
         return back()->with('success', 'បានប្រកាសដំណឹងដោយជោគជ័យ!');
     }

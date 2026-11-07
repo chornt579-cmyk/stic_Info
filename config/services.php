@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Telegram Bot Service
+    |--------------------------------------------------------------------------
+    | Server-side queue notifications only. Destination IDs must never be
+    | taken from user form inputs (Governance Manual Section 4.7).
+    */
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'channel_id' => env('TELEGRAM_CHANNEL_ID'),
+    ],
+
 ];

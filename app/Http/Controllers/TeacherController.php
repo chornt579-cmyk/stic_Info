@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendTelegramNotificationJob;
 use App\Models\Announcement;
 use App\Models\AuditLog;
 use App\Models\Schedule;
@@ -124,6 +125,10 @@ class TeacherController extends Controller
             ],
             $user->id
         );
+
+        if ($request->boolean('send_telegram')) {
+            SendTelegramNotificationJob::dispatch($announcement);
+        }
 
         return back()->with('success', __('messages.announcement_sent_success'));
     }
