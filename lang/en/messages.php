@@ -190,6 +190,22 @@ return [
     'announcement_type_all_students' => 'All Students Notice',
     'announcement_type_dept_students' => 'Department Notice',
     'announcement_type_class' => 'Class Notice',
+    // Rooms & Timetable Engine
+    'time_end_before_start' => 'End time must be after start time!',
+    'rooms' => 'Rooms',
+    'room_name' => 'Room Code / Name',
+    'room_name_kh' => 'Room Name (Khmer)',
+    'building' => 'Building',
+    'room_type' => 'Room Type',
+    'room_type_lecture' => 'Lecture Room',
+    'room_type_lab' => 'Computer / Lab Room',
+    'room_type_workshop' => 'Technical Workshop',
+    'room_type_hall' => 'Auditorium / Hall',
+    'cannot_delete_room_has_schedules' => 'Cannot delete this room because active schedules are booked in it!',
+    'schedule_created_success' => 'Schedule created successfully without conflict!',
+    'schedule_deleted_success' => 'Schedule deleted successfully!',
+    'room_created_success' => 'Room created successfully!',
+    'room_deleted_success' => 'Room deleted successfully!',
     'access_denied' => 'You do not have permission to access this page (Unauthorized Access).',
 ];
 

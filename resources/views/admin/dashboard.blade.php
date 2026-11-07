@@ -84,6 +84,12 @@
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="students" role="tab" aria-selected="false">
             <span aria-hidden="true">🎓</span> {{ __('messages.students') }}
         </button>
+        <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="schedules" role="tab" aria-selected="false">
+            <span aria-hidden="true">🗓️</span> {{ __('messages.schedules') }}
+        </button>
+        <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="rooms" role="tab" aria-selected="false">
+            <span aria-hidden="true">🚪</span> {{ __('messages.rooms') }}
+        </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="audit-logs" role="tab" aria-selected="false">
             <span aria-hidden="true">📜</span> {{ __('messages.audit_logs') }}
         </button>
@@ -528,7 +534,335 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- TAB 6: AUDIT LOGS TRAIL -->
+    <!-- TAB 6: TIMETABLE & ADVANCED CONFLICT ENGINE -->
+    <!-- ========================================== -->
+    <div id="panel-schedules" class="admin-panel hidden">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+            <!-- Create Schedule Form -->
+            <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">
+                        ➕ {{ __('messages.create') }} {{ __('messages.schedules') }}
+                    </h3>
+                    <span class="badge" style="background: #e8f0fe; color: #1a73e8; font-size: 0.75rem;">
+                        ⚡ ម៉ាស៊ីនទប់ស្កាត់ការជាន់ម៉ោងស្វ័យប្រវត្តិ
+                    </span>
+                </div>
+                <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 1rem;">
+                    ការពារការជាន់គ្នាចំពោះគ្រូ ថ្នាក់ និងបន្ទប់ (Math Formula: start &lt; exist.end &amp;&amp; end &gt; exist.start) ដោយអនុញ្ញាតម៉ោងបន្តបន្ទាប់។
+                </p>
+
+                <form action="{{ route('admin.schedules.store') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="sch_class_id" class="form-label">{{ __('messages.classes') }} *</label>
+                        <select name="class_id" id="sch_class_id" class="form-control" required>
+                            <option value="">-- {{ __('messages.select_class') }} --</option>
+                            @foreach ($classes as $c)
+                                <option value="{{ $c->id }}" {{ old('class_id') == $c->id ? 'selected' : '' }}>
+                                    {{ $c->name_kh ?? $c->name }} ({{ $c->department->code ?? '' }} - ឆ្នាំទី {{ $c->year }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sch_teacher_id" class="form-label">{{ __('messages.teachers') }} *</label>
+                        <select name="teacher_id" id="sch_teacher_id" class="form-control" required>
+                            <option value="">-- ជ្រើសរើសគ្រូបង្រៀន --</option>
+                            @foreach ($allTeachers as $t)
+                                <option value="{{ $t->id }}" {{ old('teacher_id') == $t->id ? 'selected' : '' }}>
+                                    {{ $t->name }} ({{ $t->department->code ?? '' }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sch_subject" class="form-label">{{ __('messages.subject') }} *</label>
+                        <input type="text" name="subject" id="sch_subject" class="form-control" required value="{{ old('subject') }}" placeholder="ឧ. Web Development, Database">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                        <div class="form-group">
+                            <label for="sch_day" class="form-label">ថ្ងៃសិក្សា (ច័ន្ទ-អាទិត្យ) *</label>
+                            <select name="day_of_week" id="sch_day" class="form-control" required>
+                                @foreach ($days as $d)
+                                    <option value="{{ $d }}" {{ old('day_of_week') == $d ? 'selected' : '' }}>
+                                        {{ __('messages.' . $d) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sch_shift" class="form-label">{{ __('messages.shift') }} *</label>
+                            <select name="shift" id="sch_shift" class="form-control" required>
+                                <option value="morning" {{ old('shift') == 'morning' ? 'selected' : '' }}>{{ __('messages.shift_morning') }}</option>
+                                <option value="afternoon" {{ old('shift') == 'afternoon' ? 'selected' : '' }}>{{ __('messages.shift_afternoon') }}</option>
+                                <option value="evening" {{ old('shift') == 'evening' ? 'selected' : '' }}>{{ __('messages.shift_evening') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                        <div class="form-group">
+                            <label for="sch_start_time" class="form-label">{{ __('messages.start_time') }} (HH:MM)</label>
+                            <input type="time" name="start_time" id="sch_start_time" class="form-control" value="{{ old('start_time') }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="sch_end_time" class="form-label">{{ __('messages.end_time') }} (HH:MM)</label>
+                            <input type="time" name="end_time" id="sch_end_time" class="form-control" value="{{ old('end_time') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sch_room_id" class="form-label">{{ __('messages.rooms') }} (Room Entity)</label>
+                        <select name="room_id" id="sch_room_id" class="form-control">
+                            <option value="">-- ជ្រើសរើសបន្ទប់ផ្លូវការ --</option>
+                            @foreach ($rooms as $r)
+                                <option value="{{ $r->id }}" {{ old('room_id') == $r->id ? 'selected' : '' }}>
+                                    {{ $r->display_name }} [{{ ucfirst($r->room_type) }} - {{ $r->building }}]
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sch_room_custom" class="form-label">ឬ ឈ្មោះបន្ទប់ផ្សេងៗ (Custom Room Name)</label>
+                        <input type="text" name="room" id="sch_room_custom" class="form-control" value="{{ old('room') }}" placeholder="ឧ. Lab 3, Workshop 1">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        💾 {{ __('messages.save') }} {{ __('messages.schedules') }}
+                    </button>
+                </form>
+            </div>
+
+            <!-- Schedules Table & Filters -->
+            <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.8rem;">
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">
+                        🗓️ បញ្ជីកាលវិភាគបង្រៀន ({{ $schedules->total() }})
+                    </h3>
+
+                    <!-- Filter by Class and Day -->
+                    <form action="{{ route('admin.dashboard') }}" method="GET" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <input type="hidden" name="tab" value="schedules">
+                        <select name="schedule_class_id" class="form-control" style="width: 160px; font-size: 0.85rem;">
+                            <option value="">-- គ្រប់ថ្នាក់ --</option>
+                            @foreach ($classes as $c)
+                                <option value="{{ $c->id }}" {{ request('schedule_class_id') == $c->id ? 'selected' : '' }}>
+                                    {{ $c->name_kh ?? $c->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <select name="schedule_day" class="form-control" style="width: 140px; font-size: 0.85rem;">
+                            <option value="">-- គ្រប់ថ្ងៃ --</option>
+                            @foreach ($days as $d)
+                                <option value="{{ $d }}" {{ request('schedule_day') == $d ? 'selected' : '' }}>
+                                    {{ __('messages.' . $d) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">ចម្រាញ់</button>
+                    </form>
+                </div>
+
+                <div style="overflow-x: auto; width: 100%;">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
+                                <th style="padding: 0.65rem;">ថ្ងៃ & ម៉ោង</th>
+                                <th style="padding: 0.65rem;">{{ __('messages.classes') }}</th>
+                                <th style="padding: 0.65rem;">{{ __('messages.subject') }}</th>
+                                <th style="padding: 0.65rem;">{{ __('messages.teachers') }}</th>
+                                <th style="padding: 0.65rem;">{{ __('messages.rooms') }}</th>
+                                <th style="padding: 0.65rem; text-align: right;">{{ __('messages.actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($schedules as $sch)
+                                <tr style="border-bottom: 1px solid #e2e8f0; font-size: 0.88rem;">
+                                    <td style="padding: 0.65rem;">
+                                        <strong>{{ __('messages.' . $sch->day_of_week) }}</strong>
+                                        <div>
+                                            @if($sch->start_time && $sch->end_time)
+                                                <span style="font-size: 0.78rem; background: #e8f0fe; color: #1a73e8; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 600;">
+                                                    {{ substr($sch->start_time, 0, 5) }} - {{ substr($sch->end_time, 0, 5) }}
+                                                </span>
+                                            @endif
+                                            <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 0.75rem;">
+                                                {{ ucfirst($sch->shift) }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="padding: 0.65rem;">
+                                        <strong>{{ $sch->schoolClass->name_kh ?? $sch->schoolClass->name }}</strong>
+                                        <div style="font-size: 0.78rem; color: #64748b;">
+                                            {{ $sch->schoolClass->department->code ?? '' }}
+                                        </div>
+                                    </td>
+                                    <td style="padding: 0.65rem; font-weight: 600; color: #1e293b;">
+                                        {{ $sch->subject }}
+                                    </td>
+                                    <td style="padding: 0.65rem;">
+                                        👨‍🏫 {{ $sch->teacher->name ?? '-' }}
+                                    </td>
+                                    <td style="padding: 0.65rem;">
+                                        🚪 {{ $sch->display_room }}
+                                    </td>
+                                    <td style="padding: 0.65rem; text-align: right;">
+                                        <form action="{{ route('admin.schedules.destroy', $sch) }}" method="POST" onsubmit="return confirm('{{ __('messages.confirm_delete') }}');" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm" style="background: #ea4335; color: #ffffff; border-radius: 4px; padding: 0.25rem 0.6rem; font-size: 0.8rem;">
+                                                {{ __('messages.delete') }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" style="padding: 2rem; text-align: center; color: #94a3b8;">
+                                        {{ __('messages.empty_data') }}
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 1rem;">
+                    {{ $schedules->appends(request()->query())->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 7: ROOMS & FACILITIES MANAGEMENT -->
+    <!-- ========================================== -->
+    <div id="panel-rooms" class="admin-panel hidden">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+            <!-- Create Room Form -->
+            <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
+                    ➕ {{ __('messages.create') }} {{ __('messages.rooms') }}
+                </h3>
+                <form action="{{ route('admin.rooms.store') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="room_name_code" class="form-label">{{ __('messages.room_name') }} (Code/Name) *</label>
+                        <input type="text" name="name" id="room_name_code" class="form-control" required placeholder="ឧ. Room 101, Lab 1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room_name_khmer" class="form-label">{{ __('messages.room_name_kh') }}</label>
+                        <input type="text" name="name_kh" id="room_name_khmer" class="form-control" placeholder="ឧ. បន្ទប់ ១០១, បន្ទប់ពិសោធន៍ ១">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                        <div class="form-group">
+                            <label for="room_bld" class="form-label">{{ __('messages.building') }}</label>
+                            <input type="text" name="building" id="room_bld" class="form-control" placeholder="ឧ. Building A">
+                        </div>
+                        <div class="form-group">
+                            <label for="room_flr" class="form-label">{{ __('messages.floor') }}</label>
+                            <input type="text" name="floor" id="room_flr" class="form-control" placeholder="ឧ. 1, 2">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                        <div class="form-group">
+                            <label for="room_cap" class="form-label">{{ __('messages.capacity') }}</label>
+                            <input type="number" name="capacity" id="room_cap" class="form-control" value="35" min="1" max="500">
+                        </div>
+                        <div class="form-group">
+                            <label for="room_tp" class="form-label">{{ __('messages.room_type') }} *</label>
+                            <select name="room_type" id="room_tp" class="form-control" required>
+                                <option value="lecture">{{ __('messages.room_type_lecture') }}</option>
+                                <option value="lab">{{ __('messages.room_type_lab') }}</option>
+                                <option value="workshop">{{ __('messages.room_type_workshop') }}</option>
+                                <option value="hall">{{ __('messages.room_type_hall') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        💾 {{ __('messages.save') }} {{ __('messages.rooms') }}
+                    </button>
+                </form>
+            </div>
+
+            <!-- Rooms Table -->
+            <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
+                    🚪 បញ្ជីបន្ទប់រៀន & រោងជាង ({{ $rooms->count() }})
+                </h3>
+
+                <div style="overflow-x: auto; width: 100%;">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
+                                <th style="padding: 0.65rem;">{{ __('messages.rooms') }}</th>
+                                <th style="padding: 0.65rem;">{{ __('messages.building') }} & ជាន់</th>
+                                <th style="padding: 0.65rem;">{{ __('messages.room_type') }}</th>
+                                <th style="padding: 0.65rem;">{{ __('messages.capacity') }}</th>
+                                <th style="padding: 0.65rem;">ម៉ោងប្រើប្រាស់</th>
+                                <th style="padding: 0.65rem; text-align: right;">{{ __('messages.actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($rooms as $r)
+                                <tr style="border-bottom: 1px solid #e2e8f0; font-size: 0.88rem;">
+                                    <td style="padding: 0.65rem;">
+                                        <strong>{{ $r->name }}</strong>
+                                        @if($r->name_kh && $r->name_kh !== $r->name)
+                                            <div style="font-size: 0.78rem; color: #64748b;">{{ $r->name_kh }}</div>
+                                        @endif
+                                    </td>
+                                    <td style="padding: 0.65rem;">
+                                        {{ $r->building ?? '-' }} (ជាន់ {{ $r->floor ?? '-' }})
+                                    </td>
+                                    <td style="padding: 0.65rem;">
+                                        <span class="badge" style="background: #e8f0fe; color: #1a73e8; font-size: 0.78rem;">
+                                            {{ ucfirst($r->room_type) }}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 0.65rem;">
+                                        {{ $r->capacity }} នាក់
+                                    </td>
+                                    <td style="padding: 0.65rem;">
+                                        <span class="badge" style="background: #f1f5f9; color: #475569;">
+                                            {{ $r->schedules_count }} ម៉ោង
+                                        </span>
+                                    </td>
+                                    <td style="padding: 0.65rem; text-align: right;">
+                                        <form action="{{ route('admin.rooms.destroy', $r) }}" method="POST" onsubmit="return confirm('{{ __('messages.confirm_delete') }}');" style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm" style="background: #ea4335; color: #ffffff; border-radius: 4px; padding: 0.25rem 0.6rem; font-size: 0.8rem;">
+                                                {{ __('messages.delete') }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" style="padding: 2rem; text-align: center; color: #94a3b8;">
+                                        {{ __('messages.empty_data') }}
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 8: AUDIT LOGS TRAIL -->
     <!-- ========================================== -->
     <div id="panel-audit-logs" class="admin-panel hidden">
         <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">

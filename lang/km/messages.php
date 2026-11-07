@@ -190,6 +190,22 @@ return [
     'announcement_type_all_students' => 'ដំណឹងសិស្សទាំងអស់',
     'announcement_type_dept_students' => 'ដំណឹងដេប៉ាតឺម៉ង់',
     'announcement_type_class' => 'ដំណឹងថ្នាក់រៀន',
+    // Rooms & Timetable Engine
+    'time_end_before_start' => 'ម៉ោងបញ្ចប់ត្រូវតែធំជាងម៉ោងចាប់ផ្ដើម!',
+    'rooms' => 'បន្ទប់រៀន',
+    'room_name' => 'ឈ្មោះបន្ទប់ (កូដ)',
+    'room_name_kh' => 'ឈ្មោះបន្ទប់ (ភាសាខ្មែរ)',
+    'building' => 'អគារ',
+    'room_type' => 'ប្រភេទបន្ទប់',
+    'room_type_lecture' => 'បន្ទប់ទ្រឹស្ដី',
+    'room_type_lab' => 'បន្ទប់ពិសោធន៍/កុំព្យូទ័រ',
+    'room_type_workshop' => 'រោងជាងបច្ចេកទេស',
+    'room_type_hall' => 'សាលប្រជុំធំ',
+    'cannot_delete_room_has_schedules' => 'មិនអាចលុបបន្ទប់នេះបានទេ ព្រោះមានកាលវិភាគកំពុងប្រើប្រាស់បន្ទប់នេះ!',
+    'schedule_created_success' => 'បានបញ្ចូលកាលវិភាគបង្រៀនដោយជោគជ័យ ដោយគ្មានការជាន់គ្នាក្នុងប្រព័ន្ធ!',
+    'schedule_deleted_success' => 'បានលុបកាលវិភាគដោយជោគជ័យ!',
+    'room_created_success' => 'បានបង្កើតបន្ទប់រៀនដោយជោគជ័យ!',
+    'room_deleted_success' => 'បានលុបបន្ទប់រៀនដោយជោគជ័យ!',
     'access_denied' => 'អ្នកមិនមានសិទ្ធិចូលមើលទំព័រនេះឡើយ (Unauthorized Access)។',
 ];
 

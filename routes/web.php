@@ -72,6 +72,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/schedules', [AdminController::class, 'storeSchedule'])->name('schedules.store');
         Route::delete('/schedules/{schedule}', [AdminController::class, 'deleteSchedule'])->name('schedules.destroy');
 
+        // Rooms
+        Route::post('/rooms', [AdminController::class, 'storeRoom'])->name('rooms.store');
+        Route::delete('/rooms/{room}', [AdminController::class, 'deleteRoom'])->name('rooms.destroy');
+
         // Announcements (with throttle: max 10 per hour as requested by governance)
         Route::post('/announcements', [AdminController::class, 'storeAnnouncement'])->name('announcements.store')->middleware('throttle:10,60');
         Route::delete('/announcements/{announcement}', [AdminController::class, 'deleteAnnouncement'])->name('announcements.destroy');

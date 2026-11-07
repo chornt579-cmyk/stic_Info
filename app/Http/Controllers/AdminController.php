@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Announcement;
 use App\Models\AuditLog;
 use App\Models\Department;
+use App\Models\Room;
 use App\Models\Schedule;
 use App\Models\SchoolClass;
 use App\Models\User;
+use App\Services\TimetableConflictService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +29,7 @@ class AdminController extends Controller
             'total_teachers' => User::where('role', 'teacher')->where('status', 'active')->count(),
             'pending_teachers' => User::where('role', 'teacher')->where('status', 'pending')->count(),
             'total_students' => User::where('role', 'student')->count(),
+            'total_rooms' => Room::count(),
             'total_schedules' => Schedule::count(),
             'total_announcements' => Announcement::count(),
             'total_logs' => AuditLog::count(),
@@ -49,13 +52,24 @@ class AdminController extends Controller
             ->orderBy('year')
             ->get();
 
-        // 5. Teachers Directory
+        // 5. Teachers Directory & All Active Teachers for Schedule Dropdown
+        $allTeachers = User::where('role', 'teacher')
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get();
+
         $teachers = User::where('role', 'teacher')
             ->with(['department', 'teachingClasses'])
             ->latest()
             ->paginate(15, ['*'], 'teachers_page');
 
-        // 6. Students Directory with Search & Department Filter
+        // 6. Rooms for Timetable Booking
+        $rooms = Room::withCount('schedules')->orderBy('name')->get();
+
+        // 7. Days of week standard (Monday to Sunday)
+        $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+        // 8. Students Directory with Search & Department Filter
         $studentQuery = User::where('role', 'student')->with(['department', 'schoolClass']);
 
         if ($request->filled('student_search')) {
@@ -73,13 +87,34 @@ class AdminController extends Controller
 
         $students = $studentQuery->latest()->paginate(15, ['*'], 'students_page');
 
-        // 7. Audit Logs Trail (Paginated)
+        // 9. Audit Logs Trail (Paginated)
         $auditLogs = AuditLog::with('user')
             ->latest('created_at')
             ->paginate(15, ['*'], 'logs_page');
 
-        // 8. Schedules and Announcements for management
-        $schedules = Schedule::with(['schoolClass.department', 'teacher'])->orderBy('day_of_week')->orderBy('shift')->get();
+        // 10. Schedules with eager loaded relationships and custom 7-day sort
+        $scheduleQuery = Schedule::with(['schoolClass.department', 'teacher', 'roomRelation']);
+
+        if ($request->filled('schedule_class_id')) {
+            $scheduleQuery->where('class_id', $request->input('schedule_class_id'));
+        }
+        if ($request->filled('schedule_day')) {
+            $scheduleQuery->where('day_of_week', $request->input('schedule_day'));
+        }
+
+        $schedules = $scheduleQuery->orderByRaw("CASE day_of_week
+            WHEN 'monday' THEN 1
+            WHEN 'tuesday' THEN 2
+            WHEN 'wednesday' THEN 3
+            WHEN 'thursday' THEN 4
+            WHEN 'friday' THEN 5
+            WHEN 'saturday' THEN 6
+            WHEN 'sunday' THEN 7
+            ELSE 8 END")
+            ->orderBy('start_time')
+            ->orderBy('shift')
+            ->paginate(20, ['*'], 'schedules_page');
+
         $announcements = Announcement::with('author')->latest()->take(15)->get();
 
         return view('admin.dashboard', compact(
@@ -87,7 +122,10 @@ class AdminController extends Controller
             'pendingTeachers',
             'departments',
             'classes',
+            'allTeachers',
             'teachers',
+            'rooms',
+            'days',
             'students',
             'auditLogs',
             'schedules',
@@ -330,31 +368,104 @@ class AdminController extends Controller
     }
 
     // ==========================================
-    // SCHEDULES & ANNOUNCEMENTS (Existing Core)
+    // SCHEDULES & TIMETABLE CONFLICT ENGINE
     // ==========================================
 
-    public function storeSchedule(Request $request)
+    public function storeSchedule(Request $request, TimetableConflictService $conflictService)
     {
-        $request->validate([
+        $validated = $request->validate([
             'class_id' => 'required|exists:classes,id',
             'teacher_id' => 'required|exists:users,id',
             'subject' => 'required|string|max:255',
             'day_of_week' => 'required|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             'shift' => 'required|in:morning,afternoon,evening',
-            'room' => 'nullable|string|max:50',
-            'start_time' => 'nullable',
-            'end_time' => 'nullable',
+            'room_id' => 'nullable|exists:rooms,id',
+            'room' => 'nullable|string|max:100',
+            'start_time' => 'nullable|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i',
         ]);
 
-        Schedule::create($request->all());
-        return back()->with('success', 'បានបញ្ចូលកាលវិភាគបង្រៀនដោយជោគជ័យ!');
+        if (!empty($validated['room_id']) && empty($validated['room'])) {
+            $room = Room::find($validated['room_id']);
+            $validated['room'] = $room?->name;
+        }
+
+        $schedule = $conflictService->createScheduleSafely($validated);
+
+        AuditLog::record('schedule.created', $schedule, [
+            'class_id' => $schedule->class_id,
+            'teacher_id' => $schedule->teacher_id,
+            'subject' => $schedule->subject,
+            'day_of_week' => $schedule->day_of_week,
+            'start_time' => $schedule->start_time,
+            'end_time' => $schedule->end_time,
+            'room' => $schedule->display_room,
+        ]);
+
+        return back()->with('success', __('messages.schedule_created_success'));
     }
 
     public function deleteSchedule(Schedule $schedule)
     {
+        $details = [
+            'class_id' => $schedule->class_id,
+            'subject' => $schedule->subject,
+            'teacher_id' => $schedule->teacher_id,
+            'day_of_week' => $schedule->day_of_week,
+            'start_time' => $schedule->start_time,
+            'end_time' => $schedule->end_time,
+        ];
+
         $schedule->delete();
-        return back()->with('success', 'បានលុបកាលវិភាគដោយជោគជ័យ!');
+
+        AuditLog::record('schedule.deleted', null, $details);
+
+        return back()->with('success', __('messages.schedule_deleted_success'));
     }
+
+    // ==========================================
+    // ROOMS CRUD
+    // ==========================================
+
+    public function storeRoom(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:50|unique:rooms,name',
+            'name_kh' => 'nullable|string|max:100',
+            'building' => 'nullable|string|max:50',
+            'floor' => 'nullable|string|max:20',
+            'capacity' => 'nullable|integer|min:1|max:500',
+            'room_type' => 'required|in:lecture,lab,workshop,hall',
+        ]);
+
+        $room = Room::create($validated);
+
+        AuditLog::record('room.created', $room, [
+            'name' => $room->name,
+            'building' => $room->building,
+            'capacity' => $room->capacity,
+        ]);
+
+        return back()->with('success', __('messages.room_created_success'));
+    }
+
+    public function deleteRoom(Room $room)
+    {
+        if ($room->schedules()->count() > 0) {
+            return back()->with('error', __('messages.cannot_delete_room_has_schedules'));
+        }
+
+        $name = $room->name;
+        $room->delete();
+
+        AuditLog::record('room.deleted', null, ['name' => $name]);
+
+        return back()->with('success', __('messages.room_deleted_success'));
+    }
+
+    // ==========================================
+    // ANNOUNCEMENTS
+    // ==========================================
 
     public function storeAnnouncement(Request $request)
     {

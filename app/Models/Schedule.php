@@ -13,6 +13,7 @@ class Schedule extends Model
     protected $fillable = [
         'class_id',
         'teacher_id',
+        'room_id',
         'subject',
         'day_of_week',
         'shift',
@@ -29,5 +30,22 @@ class Schedule extends Model
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function roomRelation(): BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'room_id');
+    }
+
+    /**
+     * Get display room name from either formal Room entity or legacy string.
+     */
+    public function getDisplayRoomAttribute(): string
+    {
+        if ($this->roomRelation) {
+            return $this->roomRelation->display_name;
+        }
+
+        return $this->room ?? 'N/A';
     }
 }
