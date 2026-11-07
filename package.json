@@ -4,8 +4,8 @@
   "description": "STIC Info — ព័ត៌មាន និងកាលវិភាគ — STIC Siem Reap",
   "private": true,
   "scripts": {
-    "start":        "firebase emulators:start --import=.emulator-data --export-on-exit=.emulator-data",
-    "emulate":      "firebase emulators:start",
+    "start":        "firebase emulators:start --project demo-stic --import=.emulator-data --export-on-exit=.emulator-data",
+    "emulate":      "firebase emulators:start --project demo-stic",
     "emulate:fresh": "firebase emulators:start --project demo-stic",
     "seed":         "bash scripts/seed-data.sh demo-stic",
     "deploy":       "firebase deploy",
