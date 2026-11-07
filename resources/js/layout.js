@@ -63,4 +63,24 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem(STORAGE_KEY, state ? 'true' : 'false');
         });
     }
+
+    // 3. Public Mobile Navigation Toggle
+    const publicNavToggle = document.getElementById('public-nav-toggle');
+    const publicNavWrapper = document.getElementById('public-nav-wrapper');
+
+    if (publicNavToggle && publicNavWrapper) {
+        publicNavToggle.addEventListener('click', function () {
+            const isExpanded = publicNavWrapper.classList.toggle('mobile-active');
+            publicNavToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+        });
+
+        // Close menu when a navigation anchor is clicked
+        const navLinks = publicNavWrapper.querySelectorAll('.public-nav-link');
+        navLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
+                publicNavWrapper.classList.remove('mobile-active');
+                publicNavToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
 });
