@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (tabsNav) {
-            const topbarOffset = 76; // 68px sticky header + 8px spacing
+            const topbarOffset = 70; // 64px sticky header + 6px buffer
             const navTop = tabsNav.getBoundingClientRect().top + window.pageYOffset;
             window.scrollTo({
                 top: Math.max(0, navTop - topbarOffset),

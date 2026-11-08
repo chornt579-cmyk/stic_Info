@@ -17,9 +17,9 @@
     .student-tab-btn {
         background: transparent;
         border: none;
-        padding: 0.6rem 1.1rem;
+        padding: 0.52rem 0.95rem;
         font-family: inherit;
-        font-size: 0.95rem;
+        font-size: 0.88rem;
         font-weight: 500;
         color: var(--text-muted);
         cursor: pointer;
@@ -41,27 +41,28 @@
     }
     .stat-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.85rem;
+        margin-bottom: 1.25rem;
     }
     .stat-card {
         background: #ffffff;
-        border-radius: 8px;
-        padding: 1.2rem;
+        border-radius: 10px;
+        padding: 1rem 1.15rem;
         border: 1px solid var(--border);
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: var(--shadow-sm);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
     }
     .stat-title {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        font-weight: 600;
         color: var(--text-muted);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.35rem;
     }
     .stat-value {
-        font-size: 1.6rem;
+        font-size: 1.55rem;
         font-weight: 700;
         color: var(--dark);
     }

@@ -5,31 +5,31 @@
 @section('content')
 <div style="margin-bottom: 2rem;">
     <!-- Page Header -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
         <div>
-            <h1 style="font-size: 1.6rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+            <h1 style="font-size: 1.35rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;">
                 {{ __('messages.admin_dashboard_title') }}
             </h1>
-            <p style="color: #64748b; font-size: 0.92rem; margin-top: 0.25rem;">
+            <p style="color: #64748b; font-size: 0.86rem; margin-top: 0.15rem;">
                 {{ __('messages.institute_name') }}
             </p>
         </div>
         <div>
-            <span class="badge badge-admin" style="font-size: 0.88rem; padding: 0.4rem 0.9rem; font-weight: 600;">
+            <span class="badge badge-admin" style="font-size: 0.8rem; padding: 0.32rem 0.8rem; font-weight: 600;">
                 {{ __('messages.role_admin') }}
             </span>
         </div>
     </div>
 
     <!-- TABS SUB-NAVIGATION -->
-    <div id="admin-tabs-nav" style="display: flex; gap: 0.5rem; border-bottom: 2px solid #e2e8f0; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.4rem;" role="tablist" aria-label="Admin Navigation Tabs">
+    <div id="admin-tabs-nav" style="display: flex; gap: 0.4rem; border-bottom: 2px solid #e2e8f0; margin-bottom: 1.25rem; overflow-x: auto; padding-bottom: 0.35rem;" role="tablist" aria-label="Admin Navigation Tabs">
         <button type="button" class="admin-tab-btn tab-btn tab-active" data-tab="overview" role="tab" aria-selected="true">
             {{ __('messages.dashboard') }}
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="approvals" role="tab" aria-selected="false">
             {{ __('messages.pending_approvals') }}
             @if ($pendingTeachers->count() > 0)
-                <span class="badge badge-danger" style="margin-left: 6px; font-size: 0.75rem;">{{ $pendingTeachers->count() }}</span>
+                <span class="badge badge-danger" style="margin-left: 5px; font-size: 0.72rem; padding: 0.15rem 0.45rem;">{{ $pendingTeachers->count() }}</span>
             @endif
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="departments" role="tab" aria-selected="false">
@@ -63,66 +63,81 @@
     <!-- ========================================== -->
     <div id="panel-overview" class="admin-panel">
         <!-- 1. System Statistics Grid -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
             <!-- Departments Card -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid #1a73e8; background: #ffffff;">
-                <div style="color: #64748b; font-size: 0.85rem; font-weight: 600;">{{ __('messages.total_departments') }}</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 0.3rem;">{{ $stats['total_departments'] }}</div>
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid #1a73e8; background: #ffffff; margin-bottom: 0;">
+                <div style="color: #64748b; font-size: 0.78rem; font-weight: 600;">{{ __('messages.total_departments') }}</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">{{ $stats['total_departments'] }}</div>
             </div>
 
             <!-- Classes Card -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid #34a853; background: #ffffff;">
-                <div style="color: #64748b; font-size: 0.85rem; font-weight: 600;">{{ __('messages.total_classes') }}</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 0.3rem;">{{ $stats['total_classes'] }}</div>
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid #34a853; background: #ffffff; margin-bottom: 0;">
+                <div style="color: #64748b; font-size: 0.78rem; font-weight: 600;">{{ __('messages.total_classes') }}</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">{{ $stats['total_classes'] }}</div>
             </div>
 
             <!-- Active Teachers Card -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid #fbbc04; background: #ffffff;">
-                <div style="color: #64748b; font-size: 0.85rem; font-weight: 600;">{{ __('messages.total_teachers') }}</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 0.3rem;">{{ $stats['total_teachers'] }}</div>
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid #fbbc04; background: #ffffff; margin-bottom: 0;">
+                <div style="color: #64748b; font-size: 0.78rem; font-weight: 600;">{{ __('messages.total_teachers') }}</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">{{ $stats['total_teachers'] }}</div>
             </div>
 
             <!-- Pending Approvals Card (Alert) -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid {{ $stats['pending_teachers'] > 0 ? '#ea4335' : '#bdc1c6' }}; background: {{ $stats['pending_teachers'] > 0 ? '#fef2f2' : '#ffffff' }};">
-                <div style="color: {{ $stats['pending_teachers'] > 0 ? '#ea4335' : '#64748b' }}; font-size: 0.85rem; font-weight: 600;">
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid {{ $stats['pending_teachers'] > 0 ? '#ea4335' : '#bdc1c6' }}; background: {{ $stats['pending_teachers'] > 0 ? '#fef2f2' : '#ffffff' }}; margin-bottom: 0;">
+                <div style="color: {{ $stats['pending_teachers'] > 0 ? '#ea4335' : '#64748b' }}; font-size: 0.78rem; font-weight: 600;">
                     {{ __('messages.pending_approvals') }}
                 </div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: {{ $stats['pending_teachers'] > 0 ? '#ea4335' : '#1e293b' }}; margin-top: 0.3rem;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: {{ $stats['pending_teachers'] > 0 ? '#ea4335' : '#1e293b' }}; margin-top: 0.2rem;">
                     {{ $stats['pending_teachers'] }}
                 </div>
             </div>
 
             <!-- Students Card -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid #8b5cf6; background: #ffffff;">
-                <div style="color: #64748b; font-size: 0.85rem; font-weight: 600;">{{ __('messages.total_students') }}</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 0.3rem;">{{ $stats['total_students'] }}</div>
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid #8b5cf6; background: #ffffff; margin-bottom: 0;">
+                <div style="color: #64748b; font-size: 0.78rem; font-weight: 600;">{{ __('messages.total_students') }}</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">{{ $stats['total_students'] }}</div>
             </div>
 
             <!-- Rooms Card -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid #06b6d4; background: #ffffff;">
-                <div style="color: #64748b; font-size: 0.85rem; font-weight: 600;">{{ __('messages.rooms') }}</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 0.3rem;">{{ $stats['total_rooms'] }}</div>
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid #06b6d4; background: #ffffff; margin-bottom: 0;">
+                <div style="color: #64748b; font-size: 0.78rem; font-weight: 600;">{{ __('messages.rooms') }}</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">{{ $stats['total_rooms'] }}</div>
             </div>
 
             <!-- Schedules Card -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid #f97316; background: #ffffff;">
-                <div style="color: #64748b; font-size: 0.85rem; font-weight: 600;">{{ __('messages.active_schedules') }}</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 0.3rem;">{{ $stats['total_schedules'] }}</div>
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid #f97316; background: #ffffff; margin-bottom: 0;">
+                <div style="color: #64748b; font-size: 0.78rem; font-weight: 600;">{{ __('messages.active_schedules') }}</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">{{ $stats['total_schedules'] }}</div>
             </div>
 
             <!-- Audit Logs Card -->
-            <div class="card" style="padding: 1.25rem; border-left: 4px solid #0284c7; background: #ffffff;">
-                <div style="color: #64748b; font-size: 0.85rem; font-weight: 600;">{{ __('messages.audit_logs') }}</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-top: 0.3rem;">{{ $stats['total_logs'] }}</div>
+            <div class="card" style="padding: 0.9rem 1.05rem; border-left: 3.5px solid #0284c7; background: #ffffff; margin-bottom: 0;">
+                <div style="color: #64748b; font-size: 0.78rem; font-weight: 600;">{{ __('messages.audit_logs') }}</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 0.2rem;">{{ $stats['total_logs'] }}</div>
             </div>
         </div>
 
         <!-- 2. Urgent Attention: Pending Teacher Approvals Alert (if any) -->
         @if ($pendingTeachers->isNotEmpty())
-            <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; border-top: 4px solid #ea4335;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div class="card" style="background: #ffffff; padding: 1.25rem; border-radius: 10px; margin-bottom: 1.5rem; border-top: 3.5px solid #ea4335;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
                     <div>
-                        <h2 style="font-size: 1.2rem; font-weight: 700; color: #b91c1c; display: flex; align-items: center; gap: 8px;">
+                        <h2 style="font-size: 1.15rem; font-weight: 700; color: #b91c1c; display: flex; align-items: center; gap: 8px;">
+                            <span>សំណើចុះឈ្មោះគ្រូបង្រៀនកំពុងរង់ចាំការអនុម័ត</span>
+                            <span class="badge badge-danger" style="font-size: 0.72rem; padding: 0.15rem 0.5rem;">{{ $pendingTeachers->count() }}</span>
+                        </h2>
+                        <p style="font-size: 0.82rem; color: #64748b; margin-top: 0.15rem;">
+                            ទាមទារការត្រួតពិនិត្យ និងអនុម័តដោយផ្ទាល់ពីអ្នកគ្រប់គ្រង មុនពេលគ្រូបង្រៀនអាចចូលប្រើប្រព័ន្ធ
+                        </p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-primary quick-jump-btn" data-jump-tab="approvals" style="font-size: 0.8rem; padding: 0.32rem 0.75rem;">
+                        ពិនិត្យសំណើទាំងអស់ &rarr;
+                    </button>
+                </div>
+                <div style="overflow-x: auto; width: 100%;">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #fef2f2; border-bottom: 2px solid #fecaca; text-align: left;">
                             <span>សំណើចុះឈ្មោះគ្រូបង្រៀនកំពុងរង់ចាំការអនុម័ត</span>
                             <span class="badge badge-danger">{{ $pendingTeachers->count() }}</span>
                         </h2>

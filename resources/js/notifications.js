@@ -102,20 +102,20 @@ document.addEventListener('DOMContentLoaded', function () {
         toast.setAttribute('aria-live', 'assertive');
         toast.style.cssText = `
             position: fixed;
-            top: 76px;
-            right: 20px;
+            top: 72px;
+            right: 18px;
             z-index: 99999;
-            max-width: 400px;
-            width: calc(100vw - 40px);
+            max-width: 360px;
+            width: calc(100vw - 36px);
             background: #ffffff;
-            border-left: 5px solid #303A98;
+            border-left: 4px solid #303A98;
             border-top: 1px solid #E7E9F0;
             border-right: 1px solid #E7E9F0;
             border-bottom: 1px solid #E7E9F0;
             border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(32, 41, 104, 0.18);
-            padding: 1.15rem 1.25rem;
-            animation: sticToastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 8px 24px rgba(32, 41, 104, 0.14);
+            padding: 1rem 1.15rem;
+            animation: sticToastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             font-family: 'Noto Sans Khmer', sans-serif;
         `;
 
