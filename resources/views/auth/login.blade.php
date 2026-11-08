@@ -25,16 +25,18 @@
     {!! json_encode($classesJson, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) !!}
 </script>
 
-<div id="auth-card-wrapper" data-initial-tab="{{ $initialTab }}" style="max-width: 520px; margin: 1.5rem auto; width: 100%;">
-    <div class="card" style="padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); background: #ffffff;">
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;" aria-hidden="true">🏫</div>
-            <h1 style="font-size: 1.4rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem;">{{ config('app.name') }}</h1>
-            <p style="font-size: 0.88rem; color: #64748b;">{{ __('messages.institute_name') }}</p>
+<div id="auth-card-wrapper" class="auth-card-wrapper" data-initial-tab="{{ $initialTab }}">
+    <div class="auth-card">
+        <!-- Institutional Header with Official STIC Logo -->
+        <div class="auth-header">
+            <img src="{{ asset('images/stic-logo.png') }}" alt="{{ __('messages.institute_name') }}" class="auth-brand-logo">
+            <h1 class="auth-title">STIC Info</h1>
+            <p class="auth-subtitle">{{ __('messages.institute_name') }}</p>
+            <div class="auth-divider" aria-hidden="true"></div>
         </div>
 
-        <!-- Accessible Tabs Navigation -->
-        <div style="display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 1.5rem;" role="tablist" aria-label="Authentication Options">
+        <!-- Accessible Segmented Tabs Navigation -->
+        <div class="auth-tabs" role="tablist" aria-label="Authentication Options">
             <button type="button" id="tab-login-btn" class="tab-btn tab-active" role="tab" aria-selected="true" aria-controls="login-panel" tabindex="0">
                 {{ __('messages.login') }}
             </button>
@@ -58,20 +60,22 @@
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
                         <label for="login-password" class="form-label" style="margin-bottom: 0;">{{ __('messages.password') }}</label>
-                        <a href="{{ route('password.request') }}" style="font-size: 0.82rem; color: #1a73e8; text-decoration: none; font-weight: 500;">
+                        <a href="{{ route('password.request') }}" style="font-size: 0.82rem; color: var(--stic-primary); text-decoration: none; font-weight: 600;">
                             {{ __('messages.forgot_password') }}
                         </a>
                     </div>
                     <div class="password-input-wrapper">
                         <input type="password" id="login-password" name="password" class="form-control @error('password') input-invalid @enderror" required autocomplete="current-password" placeholder="••••••••" aria-describedby="@error('password') login-password-error @enderror">
-                        <button type="button" class="password-toggle-btn" data-target="login-password" aria-label="{{ __('messages.password_toggle') }}" aria-pressed="false">👁️‍🗨️</button>
+                        <button type="button" class="password-toggle-btn" data-target="login-password" aria-label="{{ __('messages.password_toggle') }}" aria-pressed="false">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                     @error('password')
                         <span id="login-password-error" class="field-error" role="alert">{{ $message }}</span>
                     @enderror
                 </div>
 
-                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <label style="font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
                         <span>{{ __('messages.remember_me') }}</span>
@@ -119,7 +123,9 @@
                     <label for="reg-password" class="form-label">{{ __('messages.password_min') }}</label>
                     <div class="password-input-wrapper">
                         <input type="password" id="reg-password" name="password" class="form-control @error('password') input-invalid @enderror" required autocomplete="new-password" placeholder="••••••••" aria-describedby="@error('password') reg-password-error @enderror">
-                        <button type="button" class="password-toggle-btn" data-target="reg-password" aria-label="{{ __('messages.password_toggle') }}" aria-pressed="false">👁️‍🗨️</button>
+                        <button type="button" class="password-toggle-btn" data-target="reg-password" aria-label="{{ __('messages.password_toggle') }}" aria-pressed="false">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                     @error('password')
                         <span id="reg-password-error" class="field-error" role="alert">{{ $message }}</span>
@@ -130,18 +136,20 @@
                     <label for="reg-password-confirm" class="form-label">{{ __('messages.password_confirmation') }}</label>
                     <div class="password-input-wrapper">
                         <input type="password" id="reg-password-confirm" name="password_confirmation" class="form-control" required autocomplete="new-password" placeholder="••••••••">
-                        <button type="button" class="password-toggle-btn" data-target="reg-password-confirm" aria-label="{{ __('messages.password_toggle') }}" aria-pressed="false">👁️‍🗨️</button>
+                        <button type="button" class="password-toggle-btn" data-target="reg-password-confirm" aria-label="{{ __('messages.password_toggle') }}" aria-pressed="false">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <span class="form-label" id="role-label">{{ __('messages.role') }}</span>
-                    <div style="display: flex; gap: 1.5rem; margin-top: 0.35rem;" role="radiogroup" aria-labelledby="role-label">
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <div class="role-selector-grid" role="radiogroup" aria-labelledby="role-label">
+                        <label class="role-pill">
                             <input type="radio" name="role" value="student" {{ old('role', 'student') === 'student' ? 'checked' : '' }}>
                             <span>{{ __('messages.role_student') }}</span>
                         </label>
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <label class="role-pill">
                             <input type="radio" name="role" value="teacher" {{ old('role') === 'teacher' ? 'checked' : '' }}>
                             <span>{{ __('messages.role_teacher') }}</span>
                         </label>
@@ -176,11 +184,14 @@
                     @enderror
                 </div>
 
-                <div id="teacher-notice" class="alert alert-warning hidden" style="font-size: 0.88rem; padding: 0.85rem; margin-bottom: 1.25rem; line-height: 1.5;" role="status">
-                    <span aria-hidden="true">ℹ️</span> {{ __('messages.teacher_registration_notice') }}
+                <div id="teacher-notice" class="alert alert-warning hidden" role="status">
+                    <span class="alert-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    </span>
+                    <div>{{ __('messages.teacher_registration_notice') }}</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 600; background: #1a73e8; color: #ffffff;">
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; font-weight: 600; margin-top: 1rem;">
                     {{ __('messages.register') }}
                 </button>
             </form>

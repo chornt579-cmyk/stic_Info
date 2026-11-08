@@ -3,28 +3,34 @@
 @section('title', __('messages.forgot_password') . ' — ' . config('app.name'))
 
 @section('content')
-<div style="max-width: 480px; margin: 2rem auto; width: 100%;">
-    <div class="card" style="padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); background: #ffffff;">
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;" aria-hidden="true">🔑</div>
-            <h1 style="font-size: 1.35rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">{{ __('messages.forgot_password') }}</h1>
-            <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5;">
+<div class="auth-card-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="{{ asset('images/stic-logo.png') }}" alt="{{ __('messages.institute_name') }}" class="auth-brand-logo">
+            <h1 class="auth-title">{{ __('messages.forgot_password') }}</h1>
+            <p class="auth-subtitle">
                 {{ __('messages.reset_link_sent') }}
             </p>
+            <div class="auth-divider" aria-hidden="true"></div>
         </div>
 
         @if (session('status'))
-            <div class="alert alert-success" style="font-size: 0.9rem; margin-bottom: 1rem;" role="status">
-                <span aria-hidden="true">✅</span> {{ session('status') }}
+            <div class="alert alert-success" role="status">
+                <span class="alert-icon" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </span>
+                <div>{{ session('status') }}</div>
             </div>
         @endif
 
         @if (session('dev_reset_url'))
-            <div class="alert alert-warning" style="font-size: 0.85rem; margin-bottom: 1rem; word-break: break-all;" role="note">
-                <span aria-hidden="true">🛠️</span> <strong>Development Reset Link:</strong><br>
-                <a href="{{ session('dev_reset_url') }}" style="color: #1a73e8; font-weight: 600;">
-                    {{ session('dev_reset_url') }}
-                </a>
+            <div class="alert alert-warning" style="font-size: 0.85rem; margin-bottom: 1.25rem; word-break: break-all;" role="note">
+                <div>
+                    <strong>Development Reset Link:</strong><br>
+                    <a href="{{ session('dev_reset_url') }}" style="color: var(--stic-primary); font-weight: 600;">
+                        {{ session('dev_reset_url') }}
+                    </a>
+                </div>
             </div>
         @endif
 
@@ -38,12 +44,12 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.98rem; font-weight: 600; margin-bottom: 1rem;">
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.98rem; font-weight: 600; margin-bottom: 1.25rem;">
                 ផ្ញើតំណភ្ជាប់កំណត់លេខសម្ងាត់
             </button>
 
             <div style="text-align: center;">
-                <a href="{{ route('login') }}" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
+                <a href="{{ route('login') }}" style="color: var(--stic-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
                     ← {{ __('messages.already_have_account') }}
                 </a>
             </div>
