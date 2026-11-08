@@ -1,14 +1,40 @@
 /**
  * STIC Info - Teacher Dashboard Scripts
- * WCAG AA accessible and CSP compliant (No inline JS)
+ * WCAG AA accessible, two-way sidebar sync, and CSP compliant
  */
 
 document.addEventListener('DOMContentLoaded', function () {
     const teacherTabButtons = document.querySelectorAll('[data-teacher-tab]');
     const teacherTabContents = document.querySelectorAll('.teacher-tab-content');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const overlay = document.getElementById('sidebar-overlay');
+    const sidebar = document.getElementById('app-sidebar');
+
+    function syncSidebarActive(tabId) {
+        sidebarLinks.forEach(function (link) {
+            const linkHref = link.getAttribute('href') || '';
+            const linkTab = link.getAttribute('data-sidebar-tab');
+
+            const isMatch = linkTab === tabId || linkHref.endsWith('#' + tabId);
+            if (isMatch) {
+                link.classList.add('active');
+            } else if (linkTab !== 'main-dashboard') {
+                link.classList.remove('active');
+            } else {
+                link.classList.toggle('active', !tabId || tabId === 'tab-overview' || tabId === 'main-dashboard');
+            }
+        });
+    }
 
     function switchTeacherTab(tabId) {
         if (!tabId) return;
+
+        if (tabId === 'main-dashboard') {
+            tabId = 'tab-overview';
+        }
+
+        const targetContent = document.getElementById(tabId);
+        if (!targetContent) return;
 
         teacherTabButtons.forEach(btn => {
             if (btn.getAttribute('data-teacher-tab') === tabId) {
@@ -30,8 +56,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        if (history.pushState) {
-            history.pushState(null, null, '#' + tabId);
+        syncSidebarActive(tabId);
+
+        if (sidebar && sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (history.replaceState) {
+            history.replaceState(null, null, '#' + tabId);
+        } else {
+            window.location.hash = tabId;
         }
     }
 
@@ -42,10 +78,41 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    sidebarLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            const href = this.getAttribute('href') || '';
+            const hashIndex = href.indexOf('#');
+            const dataTab = this.getAttribute('data-sidebar-tab');
+
+            if (hashIndex !== -1) {
+                const targetHash = href.substring(hashIndex + 1);
+                if (document.getElementById(targetHash)) {
+                    e.preventDefault();
+                    switchTeacherTab(targetHash);
+                    const mainContent = document.querySelector('.app-content') || document.getElementById(targetHash);
+                    mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            } else if (dataTab === 'main-dashboard' && document.getElementById('tab-overview')) {
+                e.preventDefault();
+                switchTeacherTab('tab-overview');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    });
+
+    window.addEventListener('hashchange', function () {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && document.getElementById(hash)) {
+            switchTeacherTab(hash);
+        }
+    });
+
     // Check URL hash on load
     const hash = window.location.hash ? window.location.hash.substring(1) : '';
     if (hash && document.getElementById(hash)) {
         switchTeacherTab(hash);
+    } else {
+        syncSidebarActive('tab-overview');
     }
 
     // Weekly Schedule Day Filter Pills
