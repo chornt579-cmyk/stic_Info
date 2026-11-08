@@ -11,17 +11,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const sidebar = document.getElementById('app-sidebar');
 
     function syncSidebarActive(tabId) {
+        const activeTab = (!tabId || tabId === 'main-dashboard') ? 'tab-overview' : tabId;
+
         sidebarLinks.forEach(function (link) {
             const linkHref = link.getAttribute('href') || '';
             const linkTab = link.getAttribute('data-sidebar-tab');
 
-            const isMatch = linkTab === tabId || linkHref.endsWith('#' + tabId);
+            const isMatch = linkTab === activeTab || linkHref.endsWith('#' + activeTab);
             if (isMatch) {
                 link.classList.add('active');
-            } else if (linkTab !== 'main-dashboard') {
-                link.classList.remove('active');
             } else {
-                link.classList.toggle('active', !tabId || tabId === 'tab-overview' || tabId === 'main-dashboard');
+                link.classList.remove('active');
             }
         });
     }

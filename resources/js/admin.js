@@ -13,17 +13,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabsNav = document.getElementById('admin-tabs-nav');
 
     function syncSidebarActive(tabId) {
+        const activeTab = (!tabId || tabId === 'main-dashboard') ? 'overview' : tabId;
+
         sidebarLinks.forEach(function (link) {
             const linkHref = link.getAttribute('href') || '';
             const linkTab = link.getAttribute('data-sidebar-tab');
 
-            const isMatch = linkTab === tabId || linkHref.endsWith('#' + tabId);
+            const isMatch = linkTab === activeTab || linkHref.endsWith('#' + activeTab);
             if (isMatch) {
                 link.classList.add('active');
-            } else if (linkTab !== 'main-dashboard' && linkTab !== 'overview') {
-                link.classList.remove('active');
             } else {
-                link.classList.toggle('active', !tabId || tabId === 'overview' || tabId === 'main-dashboard');
+                link.classList.remove('active');
             }
         });
     }

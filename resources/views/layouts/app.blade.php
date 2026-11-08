@@ -70,9 +70,6 @@
                         </a>
                     @elseif(Auth::user()->isTeacher())
                         <span class="sidebar-nav-header">ភារកិច្ចបង្រៀន (Teaching)</span>
-                        <a href="{{ route('teacher.dashboard') }}#tab-overview" class="sidebar-link" data-sidebar-tab="tab-overview">
-                            <span>{{ __('messages.tab_overview') }}</span>
-                        </a>
                         <a href="{{ route('teacher.dashboard') }}#tab-weekly" class="sidebar-link" data-sidebar-tab="tab-weekly">
                             <span>{{ __('messages.weekly_schedule') }}</span>
                         </a>
@@ -87,9 +84,6 @@
                         </a>
                     @elseif(Auth::user()->isStudent())
                         <span class="sidebar-nav-header">ការសិក្សា (Academic)</span>
-                        <a href="{{ route('student.dashboard') }}#tab-overview" class="sidebar-link" data-sidebar-tab="tab-overview">
-                            <span>{{ __('messages.tab_overview') }}</span>
-                        </a>
                         <a href="{{ route('student.dashboard') }}#tab-weekly" class="sidebar-link" data-sidebar-tab="tab-weekly">
                             <span>{{ __('messages.weekly_schedule') }}</span>
                         </a>
