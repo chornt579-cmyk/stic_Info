@@ -25,9 +25,7 @@
             <aside class="app-sidebar" id="app-sidebar" role="navigation" aria-label="Main Navigation">
                 <!-- Brand Header with Official STIC Logo -->
                 <a href="{{ route('dashboard') }}" class="sidebar-brand">
-                    <div class="sidebar-logo-wrapper">
-                        <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="sidebar-logo">
-                    </div>
+                    <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="sidebar-brand-logo">
                     <div class="sidebar-brand-text">
                         <span class="brand-title">{{ __('messages.institute_short') }}</span>
                         <span class="brand-subtitle">STIC Info Platform</span>
@@ -226,9 +224,7 @@
         <header class="public-header" role="banner">
             <div class="public-header-container">
                 <a href="{{ route('home') }}" class="public-brand" aria-label="{{ __('messages.institute_name') }}">
-                    <div class="public-logo-frame">
-                        <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="public-logo-img">
-                    </div>
+                    <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="public-brand-logo">
                     <div class="public-brand-text">
                         <span class="public-brand-title">{{ __('messages.institute_short') }}</span>
                         <span class="public-brand-subtitle">{{ __('messages.hero_tagline') }}</span>
@@ -335,9 +331,7 @@
                 <div class="footer-grid">
                     <!-- Brand Column -->
                     <div class="footer-brand-block">
-                        <div class="footer-logo-ring">
-                            <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="footer-logo-img">
-                        </div>
+                        <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="footer-brand-logo">
                         <h2 class="footer-title">{{ __('messages.institute_name') }}</h2>
                         <div class="footer-subtitle">{{ __('messages.hero_subtitle') }}</div>
                         <p class="footer-desc">

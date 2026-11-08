@@ -62,20 +62,17 @@
             </div>
         </div>
 
-        <!-- Hero Right Column: Official Institutional Emblem Composition -->
+        <!-- Hero Right Column: Official Institutional Emblem Showcase -->
         <div class="hero-right">
-            <div class="hero-emblem-card">
-                <div class="emblem-logo-wrapper">
-                    <img src="{{ asset('images/stic-logo.png') }}" alt="{{ __('messages.institute_name') }}" class="emblem-logo-img">
+            <div class="hero-emblem-showcase">
+                <div class="hero-emblem-halo">
+                    <img src="{{ asset('images/stic-logo.png') }}" alt="{{ __('messages.institute_name') }}" class="hero-emblem-logo">
                 </div>
 
-                <h2 class="emblem-title">{{ __('messages.institute_name') }}</h2>
-                <div class="emblem-tag">{{ __('messages.institution_type') }}</div>
-
-                <div class="emblem-divider" aria-hidden="true"></div>
-
-                <div class="emblem-values">
-                    {{ __('messages.institution_values') }}
+                <div class="hero-emblem-credentials">
+                    <span class="hero-emblem-kicker">{{ __('messages.institution_type') }}</span>
+                    <div class="hero-emblem-divider" aria-hidden="true"></div>
+                    <span class="hero-emblem-motto">{{ __('messages.institution_values') }}</span>
                 </div>
             </div>
         </div>

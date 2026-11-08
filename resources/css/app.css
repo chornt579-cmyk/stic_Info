@@ -133,24 +133,12 @@ h1, h2, h3, h4, h5, h6, p, span, a, button, input, label {
     color: #ffffff;
 }
 
-.sidebar-logo-wrapper {
+.sidebar-brand-logo {
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    background: #ffffff;
-    padding: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 0 0 2px var(--stic-secondary);
-}
-
-.sidebar-logo {
-    width: 100%;
-    height: 100%;
     object-fit: contain;
-    border-radius: 50%;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
 }
 
 .sidebar-brand-text {
@@ -789,25 +777,17 @@ tr:hover td {
     flex-shrink: 0;
 }
 
-.public-logo-frame {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid var(--stic-secondary);
-    padding: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(48, 58, 152, 0.1);
+.public-brand-logo {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
     flex-shrink: 0;
+    filter: drop-shadow(0 2px 6px rgba(48, 58, 152, 0.12));
+    transition: transform 0.2s ease;
 }
 
-.public-logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 50%;
+.public-brand:hover .public-brand-logo {
+    transform: scale(1.05);
 }
 
 .public-brand-text {
@@ -1062,81 +1042,82 @@ tr:hover td {
     justify-content: center;
 }
 
-.hero-emblem-card {
-    background: #ffffff;
-    border: 1px solid var(--stic-border);
-    border-radius: 18px;
-    padding: 3rem 2.25rem 2.5rem 2.25rem;
+.hero-emblem-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    box-shadow: 0 20px 45px -12px rgba(32, 41, 104, 0.12), 0 0 0 1px rgba(213, 173, 53, 0.18);
     position: relative;
     max-width: 440px;
     width: 100%;
 }
 
-.hero-emblem-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--stic-primary) 0%, var(--stic-secondary) 50%, var(--stic-primary) 100%);
-    border-radius: 18px 18px 0 0;
-}
-
-.emblem-logo-wrapper {
-    width: 170px;
-    height: 170px;
-    margin: 0 auto 1.65rem auto;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 3px solid var(--stic-secondary);
-    box-shadow: 0 0 0 7px rgba(213, 173, 53, 0.14), 0 12px 24px rgba(32, 41, 104, 0.08);
+.hero-emblem-halo {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
-.emblem-logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+.hero-emblem-halo::before {
+    content: '';
+    position: absolute;
+    width: 280px;
+    height: 280px;
     border-radius: 50%;
+    background: radial-gradient(circle, rgba(213, 173, 53, 0.12) 0%, rgba(48, 58, 152, 0.05) 50%, transparent 72%);
+    z-index: 0;
+    pointer-events: none;
 }
 
-.emblem-title {
-    font-size: 1.15rem;
+.hero-emblem-logo {
+    width: 230px;
+    height: 230px;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 14px 28px rgba(32, 41, 104, 0.14));
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+
+.hero-emblem-showcase:hover .hero-emblem-logo {
+    transform: scale(1.03);
+    filter: drop-shadow(0 18px 36px rgba(32, 41, 104, 0.22));
+}
+
+.hero-emblem-credentials {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    z-index: 1;
+}
+
+.hero-emblem-kicker {
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--stic-primary-dark);
-    margin-bottom: 0.35rem;
-    line-height: 1.4;
+    letter-spacing: 0.4px;
 }
 
-.emblem-tag {
-    font-size: 0.8rem;
-    color: var(--stic-muted);
-    margin-bottom: 1.25rem;
-    letter-spacing: 0.3px;
-}
-
-.emblem-divider {
-    width: 48px;
+.hero-emblem-divider {
+    width: 44px;
     height: 2px;
     background: var(--stic-secondary);
-    margin: 0 auto 1.25rem auto;
+    border-radius: 1px;
 }
 
-.emblem-values {
-    display: inline-block;
-    font-size: 0.82rem;
+.hero-emblem-motto {
+    font-size: 0.84rem;
     font-weight: 600;
     color: var(--stic-gold-dark);
     background: var(--stic-gold-soft);
     border: 1px solid var(--stic-gold-light);
     border-radius: 6px;
-    padding: 0.5rem 1rem;
+    padding: 0.45rem 1rem;
+    letter-spacing: 0.3px;
     line-height: 1.5;
 }
 
@@ -1442,25 +1423,17 @@ tr:hover td {
     flex-direction: column;
 }
 
-.footer-logo-ring {
-    width: 58px;
-    height: 58px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid var(--stic-secondary);
-    padding: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.footer-brand-logo {
+    width: 68px;
+    height: 68px;
+    object-fit: contain;
     margin-bottom: 1.25rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
+    transition: transform 0.2s ease;
 }
 
-.footer-logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 50%;
+.footer-brand-logo:hover {
+    transform: scale(1.04);
 }
 
 .footer-title {
@@ -1662,9 +1635,9 @@ tr:hover td {
         text-align: center;
     }
 
-    .emblem-logo-wrapper {
-        width: 130px;
-        height: 130px;
+    .hero-emblem-logo {
+        width: 170px;
+        height: 170px;
     }
 
     .footer-bottom-container {
