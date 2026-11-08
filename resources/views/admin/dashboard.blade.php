@@ -50,6 +50,9 @@
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="rooms" role="tab" aria-selected="false">
             {{ __('messages.rooms') }}
         </button>
+        <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="announcements" role="tab" aria-selected="false">
+            {{ __('messages.announcements') }}
+        </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="audit-logs" role="tab" aria-selected="false">
             {{ __('messages.audit_logs') }}
         </button>
@@ -1248,7 +1251,199 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- TAB 9: AUDIT LOGS TRAIL                    -->
+    <!-- TAB 9: ANNOUNCEMENTS MANAGEMENT            -->
+    <!-- ========================================== -->
+    <div id="panel-announcements" class="admin-panel hidden">
+        <!-- Section Header with Title & Add New Button -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 0;">
+                    {{ __('messages.official_announcements') }} ({{ $allAnnouncements->total() }})
+                </h2>
+                <p style="font-size: 0.88rem; color: #64748b; margin-top: 0.2rem;">
+                    ផ្សាយសេចក្តីជូនដំណឹងផ្លូវការ ជាមួយប្រព័ន្ធបន្លឺសំឡេង និងផ្ញើ Alert ទៅកាន់ Browser និងទូរស័ព្ទដៃ
+                </p>
+            </div>
+            <button type="button" class="btn btn-primary toggle-create-btn" data-target="create-announcement-card" style="display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>ផ្សាយសេចក្តីជូនដំណឹងថ្មី</span>
+            </button>
+        </div>
+
+        <!-- Collapsible Create Announcement Form -->
+        <div id="create-announcement-card" class="card collapsible-form-card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; border: 1px solid #dbeafe; box-shadow: 0 4px 12px rgba(48, 58, 152, 0.06); {{ $errors->hasAny(['title', 'content', 'target_type', 'target_id']) ? 'display: block;' : 'display: none;' }}">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e2e8f0;">
+                <div>
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--stic-primary-dark); margin: 0;">
+                        ផ្សាយសេចក្តីជូនដំណឹងថ្មី (Publish Announcement)
+                    </h3>
+                    <p style="font-size: 0.82rem; color: #64748b; margin: 0.2rem 0 0 0;">
+                        រាល់ដំណឹងដែលបានផ្សាយ នឹងបន្លឺសំឡេងរោទិ៍ និងលោតផ្ទាំង Alert លើ Browser កុំព្យូទ័រ និងទូរស័ព្ទដៃសិស្ស/គ្រូ
+                    </p>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary close-create-btn" data-target="create-announcement-card">
+                    {{ __('messages.cancel') }}
+                </button>
+            </div>
+
+            <form action="{{ route('admin.announcements.store') }}" method="POST">
+                @csrf
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        <label for="ann-title" class="form-label">{{ __('messages.announcement_title') }} *</label>
+                        <input type="text" id="ann-title" name="title" class="form-control" required maxlength="255" placeholder="ឧ. សេចក្តីជូនដំណឹងស្តីពីការឈប់សម្រាកបុណ្យចូលឆ្នាំ..." value="{{ old('title') }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ann-target-type" class="form-label">{{ __('messages.target_audience') }} *</label>
+                        <select id="ann-target-type" name="target_type" class="form-control" required>
+                            <option value="public" {{ old('target_type') == 'public' ? 'selected' : '' }}>សាធារណៈ (ទំព័រដើម & ទាំងអស់គ្នា)</option>
+                            <option value="all_students" {{ old('target_type') == 'all_students' ? 'selected' : '' }}>សិស្ស/និស្សិតទាំងអស់ (All Students)</option>
+                            <option value="all_teachers" {{ old('target_type') == 'all_teachers' ? 'selected' : '' }}>គ្រូបង្រៀនទាំងអស់ (All Teachers)</option>
+                            <option value="dept_students" {{ old('target_type') == 'dept_students' ? 'selected' : '' }}>តាមដេប៉ាតឺម៉ង់ (Department)</option>
+                            <option value="class" {{ old('target_type') == 'class' ? 'selected' : '' }}>តាមថ្នាក់រៀនជាក់លាក់ (Specific Class)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="ann-target-id-group">
+                        <label for="ann-target-id" class="form-label">ជ្រើសរើស ដេប៉ាតឺម៉ង់ ឬ ថ្នាក់រៀន (Target ID)</label>
+                        <select id="ann-target-id" name="target_id" class="form-control">
+                            <option value="">-- ជ្រើសរើស (បើជ្រើសរើសតាមដេប៉ាតឺម៉ង់/ថ្នាក់) --</option>
+                            <optgroup label="ដេប៉ាតឺម៉ង់ (Departments)">
+                                @foreach ($departments as $dept)
+                                    <option value="{{ $dept->id }}" {{ old('target_id') == $dept->id ? 'selected' : '' }}>
+                                        {{ $dept->code }} - {{ $dept->name_kh ?? $dept->name }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                            <optgroup label="ថ្នាក់រៀន (Classes)">
+                                @foreach ($classes as $c)
+                                    <option value="{{ $c->id }}" {{ old('target_id') == $c->id ? 'selected' : '' }}>
+                                        {{ $c->name_kh ?? $c->name }} ({{ $c->department->code }})
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 0.5rem;">
+                    <label for="ann-content" class="form-label">{{ __('messages.announcement_content') }} *</label>
+                    <textarea id="ann-content" name="content" class="form-control" rows="4" required placeholder="សរសេរខ្លឹមសារលម្អិតនៃសេចក្តីជូនដំណឹងនៅទីនេះ...">{{ old('content') }}</textarea>
+                </div>
+
+                <!-- Multi-Channel Alerts Notification Options -->
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 1rem;">
+                    <h4 style="font-size: 0.92rem; font-weight: 700; color: #1e293b; margin: 0 0 0.5rem 0;">
+                        ជម្រើសនៃការបញ្ជូន Alerts ទៅកាន់អ្នកប្រើប្រាស់ (Alert Delivery Channels)
+                    </h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="send_telegram" value="1" checked style="margin-top: 3px;">
+                            <div>
+                                <strong style="font-size: 0.88rem; color: #1e293b;">ផ្ញើការជូនដំណឹងបន្ទាន់ទៅកាន់ទូរស័ព្ទដៃតាម Telegram (Phone Alert)</strong>
+                                <p style="font-size: 0.78rem; color: #64748b; margin: 0;">
+                                    ប្រព័ន្ធនឹងបញ្ជូនដំណឹងនេះភ្លាមៗទៅកាន់ Telegram Channel/Group ផ្លូវការរបស់វិទ្យាស្ថាន ដែលនឹងបន្លឺសំឡេងរោទិ៍ Push Notification ផ្ទាល់លើទូរស័ព្ទដៃ។
+                                </p>
+                            </div>
+                        </label>
+                        <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" name="send_browser_alert" value="1" checked style="margin-top: 3px;">
+                            <div>
+                                <strong style="font-size: 0.88rem; color: #1e293b;">បញ្ជូនការជូនដំណឹងលើ Browser & Computer (Web Notification Alert)</strong>
+                                <p style="font-size: 0.78rem; color: #64748b; margin: 0;">
+                                    បន្លឺសំឡេង Harmonic Chime និងលោតផ្ទាំង Notification Alert លើ Browser របស់សិស្ស និងគ្រូដែលកំពុងបើកប្រព័ន្ធ STIC Info។
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem;">
+                    <button type="button" class="btn btn-secondary close-create-btn" data-target="create-announcement-card">
+                        {{ __('messages.cancel') }}
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        ផ្សាយដំណឹង & បញ្ជូន Alerts
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Announcements Table (Full-Width 100%) -->
+        <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
+            <div style="overflow-x: auto; width: 100%;">
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
+                            <th style="padding: 0.75rem;">ចំណងជើងដំណឹង</th>
+                            <th style="padding: 0.75rem;">ទស្សនិកជនគោលដៅ</th>
+                            <th style="padding: 0.75rem;">ផ្សាយដោយ</th>
+                            <th style="padding: 0.75rem;">ស្ថានភាព Telegram Alert</th>
+                            <th style="padding: 0.75rem;">កាលបរិច្ឆេទ</th>
+                            <th style="padding: 0.75rem; text-align: right;">{{ __('messages.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($allAnnouncements as $ann)
+                            <tr style="border-bottom: 1px solid #e2e8f0; font-size: 0.88rem;">
+                                <td style="padding: 0.75rem; max-width: 320px;">
+                                    <div style="font-weight: 700; color: #1e293b;">{{ $ann->title }}</div>
+                                    <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px; line-height: 1.4;">
+                                        {{ Str::limit(strip_tags($ann->content), 90) }}
+                                    </div>
+                                </td>
+                                <td style="padding: 0.75rem;">
+                                    <span class="badge" style="background: #e8f0fe; color: #1a73e8;">
+                                        {{ ucfirst($ann->target_type) }}
+                                    </span>
+                                </td>
+                                <td style="padding: 0.75rem;">
+                                    {{ $ann->author ? $ann->author->name : 'Admin' }}
+                                </td>
+                                <td style="padding: 0.75rem;">
+                                    @if ($ann->is_telegram_sent)
+                                        <span class="badge" style="background: #e8f5ee; color: #21865b;">
+                                            ផ្ញើជោគជ័យ
+                                        </span>
+                                    @else
+                                        <span class="badge" style="background: #f1f5f9; color: #64748b;">
+                                            មិនទាន់ផ្ញើ/ធម្មតា
+                                        </span>
+                                    @endif
+                                </td>
+                                <td style="padding: 0.75rem; color: #64748b; white-space: nowrap;">
+                                    {{ $ann->created_at->timezone('Asia/Phnom_Penh')->format('d/m/Y H:i') }}
+                                </td>
+                                <td style="padding: 0.75rem; text-align: right;">
+                                    <form action="{{ route('admin.announcements.destroy', $ann) }}" method="POST" onsubmit="return confirm('តើអ្នកពិតជាចង់លុបសេចក្តីជូនដំណឹងនេះមែនទេ?');" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm" style="background: #ea4335; color: #ffffff; border-radius: 4px; padding: 0.3rem 0.65rem; font-size: 0.8rem;">
+                                            {{ __('messages.delete') }}
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" style="padding: 2.5rem; text-align: center; color: #94a3b8;">
+                                    {{ __('messages.no_public_announcements') }}
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 1rem;">
+                {{ $allAnnouncements->appends(['tab' => 'announcements'])->links() }}
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 10: AUDIT LOGS TRAIL                   -->
     <!-- ========================================== -->
     <div id="panel-audit-logs" class="admin-panel hidden">
         <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">

@@ -40,5 +40,7 @@ Route::prefix('v1')->group(function () {
             'data' => $announcements,
         ]);
     });
+
+    Route::get('/announcements/latest', [\App\Http\Controllers\AnnouncementController::class, 'latest']);
 });
 

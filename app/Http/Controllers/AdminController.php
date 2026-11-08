@@ -116,6 +116,7 @@ class AdminController extends Controller
             ->orderBy('shift')
             ->paginate(20, ['*'], 'schedules_page');
 
+        $allAnnouncements = Announcement::with('author')->latest()->paginate(15, ['*'], 'announcements_page');
         $announcements = Announcement::with('author')->latest()->take(15)->get();
 
         return view('admin.dashboard', compact(
@@ -130,7 +131,8 @@ class AdminController extends Controller
             'students',
             'auditLogs',
             'schedules',
-            'announcements'
+            'announcements',
+            'allAnnouncements'
         ));
     }
 

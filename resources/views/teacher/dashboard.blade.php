@@ -532,6 +532,27 @@
                             </small>
                         </div>
 
+                        <div class="form-group" style="background: #f8fafc; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer; margin-bottom: 0.4rem;">
+                                <input type="checkbox" name="send_telegram" value="1" checked style="margin-top: 3px;">
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: #1e293b;">ផ្ញើការជូនដំណឹងបន្ទាន់ទៅកាន់ទូរស័ព្ទដៃតាម Telegram (Phone Alert)</strong>
+                                    <p style="font-size: 0.78rem; color: #64748b; margin: 0;">
+                                        ប្រព័ន្ធនឹងផ្ញើសេចក្តីជូនដំណឹងនេះទៅកាន់ Telegram Channel/Group ដែលបន្លឺសំឡេងរោទិ៍ Push Notification ផ្ទាល់លើទូរស័ព្ទដៃសិស្សក្នុងថ្នាក់។
+                                    </p>
+                                </div>
+                            </label>
+                            <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" name="send_browser_alert" value="1" checked style="margin-top: 3px;">
+                                <div>
+                                    <strong style="font-size: 0.88rem; color: #1e293b;">បញ្ជូនការជូនដំណឹងលើ Browser & Computer (Web Notification Alert)</strong>
+                                    <p style="font-size: 0.78rem; color: #64748b; margin: 0;">
+                                        បន្លឺសំឡេង និងលោតផ្ទាំង Alert លើ Browser កុំព្យូទ័រ ឬទូរស័ព្ទដៃរបស់សិស្សដែលកំពុងបើកប្រព័ន្ធ STIC Info។
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
                              {{ __('messages.publish') }}
                         </button>

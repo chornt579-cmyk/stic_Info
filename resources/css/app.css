@@ -1856,3 +1856,57 @@ tr:hover td {
     }
 }
 
+/* ==========================================================================
+   STIC INFO — Announcements & Notification Alerts (Browser & Mobile)
+   ========================================================================== */
+
+@keyframes sticToastSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes sticToastSlideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.96);
+    }
+}
+
+.notification-bell-btn {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+}
+
+.notification-bell-btn:hover {
+    background-color: rgba(48, 58, 152, 0.08);
+}
+
+.notification-bell-btn.notif-granted {
+    border-color: #21865b;
+    color: #21865b;
+}
+
+.notif-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
+    background-color: #21865b;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #ffffff;
+}
+
+

@@ -62,6 +62,9 @@
                         <a href="{{ route('admin.dashboard') }}#rooms" class="sidebar-link" data-sidebar-tab="rooms">
                             <span>{{ __('messages.rooms') }}</span>
                         </a>
+                        <a href="{{ route('admin.dashboard') }}#announcements" class="sidebar-link" data-sidebar-tab="announcements">
+                            <span>{{ __('messages.announcements') }}</span>
+                        </a>
                         <a href="{{ route('admin.dashboard') }}#audit-logs" class="sidebar-link" data-sidebar-tab="audit-logs">
                             <span>{{ __('messages.audit_logs') }}</span>
                         </a>
@@ -141,6 +144,12 @@
                     </div>
 
                     <div class="topbar-right">
+                        <!-- Multi-Channel Notification Alert Bell -->
+                        <button type="button" class="btn btn-outline btn-sm notification-bell-btn" id="stic-notif-btn" title="បើក/បិទការជូនដំណឹងលើ Browser & Phone (Alerts)" aria-label="ការជូនដំណឹង" style="padding: 0.35rem 0.65rem;">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            <span class="notif-dot" style="display: none;"></span>
+                        </button>
+
                         <!-- Bilingual Language Capsule Switcher -->
                         <div class="language-capsule">
                             <a href="{{ request()->fullUrlWithQuery(['lang' => 'km']) }}" class="language-btn {{ app()->getLocale() === 'km' ? 'active' : '' }}">ខ្មែរ</a>
