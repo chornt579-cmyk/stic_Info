@@ -1,6 +1,7 @@
 /**
  * STIC Info — Admin Dashboard UI Script
- * Clean Event-driven tab management, two-way sidebar sync, and accessible navigation
+ * Clean Event-driven tab management, two-way sidebar sync, direct smooth scroll jumping,
+ * and collapsible on-demand creation forms.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -9,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const sidebarLinks = document.querySelectorAll('.sidebar-link');
     const overlay = document.getElementById('sidebar-overlay');
     const sidebar = document.getElementById('app-sidebar');
+    const tabsNav = document.getElementById('admin-tabs-nav');
 
     function syncSidebarActive(tabId) {
         sidebarLinks.forEach(function (link) {
@@ -18,20 +20,36 @@ document.addEventListener('DOMContentLoaded', function () {
             const isMatch = linkTab === tabId || linkHref.endsWith('#' + tabId);
             if (isMatch) {
                 link.classList.add('active');
-            } else if (linkTab !== 'main-dashboard') {
+            } else if (linkTab !== 'main-dashboard' && linkTab !== 'overview') {
                 link.classList.remove('active');
             } else {
-                link.classList.toggle('active', !tabId || tabId === 'approvals' || tabId === 'main-dashboard');
+                link.classList.toggle('active', !tabId || tabId === 'overview' || tabId === 'main-dashboard');
             }
         });
     }
 
-    function switchAdminTab(targetTabId) {
+    function scrollDirectlyToSection(targetTabId) {
+        if (!targetTabId || targetTabId === 'overview' || targetTabId === 'main-dashboard') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        if (tabsNav) {
+            const topbarOffset = 76; // 68px sticky header + 8px spacing
+            const navTop = tabsNav.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({
+                top: Math.max(0, navTop - topbarOffset),
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function switchAdminTab(targetTabId, shouldScroll = true) {
         if (!targetTabId) return;
 
-        // Support clicking 'main-dashboard' to return to default first tab
+        // Support clicking 'main-dashboard' to return to default Overview tab
         if (targetTabId === 'main-dashboard') {
-            targetTabId = 'approvals';
+            targetTabId = 'overview';
         }
 
         const targetPanel = document.getElementById('panel-' + targetTabId);
@@ -71,11 +89,16 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.style.overflow = '';
         }
 
-        // 5. Store active tab in URL hash
+        // 5. Store active tab in URL hash without page reload
         if (history.replaceState) {
             history.replaceState(null, '', '#' + targetTabId);
         } else {
             window.location.hash = targetTabId;
+        }
+
+        // 6. Direct Smooth Scroll Jump to Content
+        if (shouldScroll) {
+            scrollDirectlyToSection(targetTabId);
         }
     }
 
@@ -83,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
     adminTabBtns.forEach(function (btn) {
         btn.addEventListener('click', function () {
             const tabId = this.getAttribute('data-tab');
-            switchAdminTab(tabId);
+            switchAdminTab(tabId, true);
         });
     });
 
@@ -99,31 +122,74 @@ document.addEventListener('DOMContentLoaded', function () {
                 const panel = document.getElementById('panel-' + targetHash);
                 if (panel) {
                     e.preventDefault();
-                    switchAdminTab(targetHash);
-                    const mainContent = document.querySelector('.app-content') || panel;
-                    mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    switchAdminTab(targetHash, true);
                 }
-            } else if (dataTab === 'main-dashboard' && document.getElementById('panel-approvals')) {
+            } else if ((dataTab === 'main-dashboard' || dataTab === 'overview') && document.getElementById('panel-overview')) {
                 e.preventDefault();
-                switchAdminTab('approvals');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                switchAdminTab('overview', true);
             }
         });
     });
 
-    // C. Listen to hashchange events (browser Back/Forward navigation)
+    // C. Listen to Quick Jump buttons (e.g. inside Overview cards)
+    document.querySelectorAll('.quick-jump-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const jumpTab = this.getAttribute('data-jump-tab');
+            if (jumpTab) {
+                switchAdminTab(jumpTab, true);
+            }
+        });
+    });
+
+    // D. Listen to Collapsible Create Form Toggle Buttons
+    document.querySelectorAll('.toggle-create-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const targetId = this.getAttribute('data-target');
+            const card = document.getElementById(targetId);
+            if (card) {
+                const isHidden = card.style.display === 'none' || card.classList.contains('hidden');
+                if (isHidden) {
+                    card.style.display = 'block';
+                    card.classList.remove('hidden');
+                    // Focus on first input
+                    const firstInput = card.querySelector('input:not([type="hidden"]), select, textarea');
+                    if (firstInput) {
+                        firstInput.focus();
+                    }
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    card.style.display = 'none';
+                    card.classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    // E. Listen to Collapsible Create Form Cancel Buttons
+    document.querySelectorAll('.close-create-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const targetId = this.getAttribute('data-target');
+            const card = document.getElementById(targetId);
+            if (card) {
+                card.style.display = 'none';
+                card.classList.add('hidden');
+            }
+        });
+    });
+
+    // F. Listen to hashchange events (browser Back/Forward navigation)
     window.addEventListener('hashchange', function () {
         const hash = window.location.hash.replace('#', '');
         if (hash && document.getElementById('panel-' + hash)) {
-            switchAdminTab(hash);
+            switchAdminTab(hash, true);
         }
     });
 
-    // D. Handle initial tab on page load
-    const currentHash = window.location.hash.replace('#', '');
-    if (currentHash && document.getElementById('panel-' + currentHash)) {
-        switchAdminTab(currentHash);
+    // G. Handle initial tab on page load
+    const initialHash = window.location.hash.replace('#', '');
+    if (initialHash && document.getElementById('panel-' + initialHash)) {
+        switchAdminTab(initialHash, false);
     } else {
-        syncSidebarActive('approvals');
+        switchAdminTab('overview', false);
     }
 });

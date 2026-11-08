@@ -35,7 +35,7 @@
                 <!-- Navigation Links Hierarchy -->
                 <nav class="sidebar-nav">
                     <span class="sidebar-nav-header">ផ្ទាំងចម្បង (Main Menu)</span>
-                    <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard', 'admin.dashboard', 'teacher.dashboard', 'student.dashboard') ? 'active' : '' }}" data-sidebar-tab="main-dashboard">
+                    <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') . '#overview' : (Auth::user()->isTeacher() ? route('teacher.dashboard') . '#tab-overview' : route('student.dashboard') . '#tab-overview') }}" class="sidebar-link {{ request()->routeIs('dashboard', 'admin.dashboard', 'teacher.dashboard', 'student.dashboard') ? 'active' : '' }}" data-sidebar-tab="{{ Auth::user()->isAdmin() ? 'overview' : 'tab-overview' }}">
                         <span>{{ __('messages.dashboard') }}</span>
                     </a>
 

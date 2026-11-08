@@ -26,7 +26,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function switchStudentTab(tabId) {
+    function scrollToSection(targetTabId) {
+        if (!targetTabId || targetTabId === 'tab-overview' || targetTabId === 'main-dashboard') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        const tabsContainer = document.querySelector('.student-tabs') || document.getElementById(targetTabId);
+        if (tabsContainer) {
+            const topbarOffset = 76;
+            const topPos = tabsContainer.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({
+                top: Math.max(0, topPos - topbarOffset),
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function switchStudentTab(tabId, shouldScroll = false) {
         if (!tabId) return;
 
         if (tabId === 'main-dashboard') {
@@ -69,12 +86,16 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             window.location.hash = tabId;
         }
+
+        if (shouldScroll) {
+            scrollToSection(tabId);
+        }
     }
 
     studentTabButtons.forEach(btn => {
         btn.addEventListener('click', function () {
             const target = this.getAttribute('data-student-tab');
-            switchStudentTab(target);
+            switchStudentTab(target, true);
         });
     });
 
@@ -88,14 +109,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const targetHash = href.substring(hashIndex + 1);
                 if (document.getElementById(targetHash)) {
                     e.preventDefault();
-                    switchStudentTab(targetHash);
-                    const mainContent = document.querySelector('.app-content') || document.getElementById(targetHash);
-                    mainContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    switchStudentTab(targetHash, true);
                 }
             } else if (dataTab === 'main-dashboard' && document.getElementById('tab-overview')) {
                 e.preventDefault();
-                switchStudentTab('tab-overview');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                switchStudentTab('tab-overview', true);
             }
         });
     });
