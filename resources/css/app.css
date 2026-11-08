@@ -1910,4 +1910,161 @@ tr:hover td {
     box-shadow: 0 0 0 2px #ffffff;
 }
 
+/* ==========================================================================
+   7. STIC Institutional Pagination System
+   Fixes squished, overlapping page numbers; provides Royal Blue highlight
+   and graceful responsive layout.
+   ========================================================================== */
+.stic-pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 1.15rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--stic-border-light);
+    width: 100%;
+}
+
+.stic-pagination-info {
+    font-size: 0.84rem;
+    color: var(--stic-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.stic-pagination-highlight {
+    font-weight: 700;
+    color: var(--stic-primary-dark);
+}
+
+.stic-pagination-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.stic-page-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.55rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.86rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid var(--stic-border);
+    background-color: #ffffff;
+    color: var(--stic-text);
+    transition: all 0.16s ease-in-out;
+    user-select: none;
+    box-sizing: border-box;
+    line-height: 1;
+}
+
+.stic-page-btn:hover:not(.stic-page-disabled):not(.stic-page-dots) {
+    border-color: var(--stic-primary);
+    color: var(--stic-primary);
+    background-color: var(--stic-primary-soft);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-xs);
+}
+
+.stic-page-btn.stic-page-active {
+    background-color: var(--stic-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--stic-primary) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 6px rgba(48, 58, 152, 0.25);
+    cursor: default;
+}
+
+.stic-page-btn.stic-page-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: var(--stic-surface-muted);
+    border-color: var(--stic-border);
+    color: var(--stic-muted);
+}
+
+.stic-page-btn.stic-page-dots {
+    border: none;
+    background: transparent;
+    color: var(--stic-muted);
+    cursor: default;
+    min-width: 24px;
+    padding: 0;
+}
+
+/* Fallback override for any raw Laravel pagination HTML */
+nav[role="navigation"] div.hidden.sm\:flex-1 {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+}
+
+nav[role="navigation"] .inline-flex.shadow-sm,
+nav[role="navigation"] .inline-flex.rounded-md {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    box-shadow: none !important;
+}
+
+nav[role="navigation"] .inline-flex.shadow-sm > span,
+nav[role="navigation"] .inline-flex.shadow-sm > a,
+nav[role="navigation"] .inline-flex.rounded-md > span,
+nav[role="navigation"] .inline-flex.rounded-md > a {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--stic-border) !important;
+    min-width: 34px !important;
+    height: 34px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 0.55rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    color: var(--stic-text) !important;
+    background-color: #ffffff !important;
+    transition: all 0.15s ease !important;
+    box-sizing: border-box !important;
+    text-decoration: none !important;
+}
+
+nav[role="navigation"] .inline-flex.shadow-sm > span[aria-current="page"] > span,
+nav[role="navigation"] .inline-flex.rounded-md > span[aria-current="page"] > span {
+    background-color: var(--stic-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--stic-primary) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 6px rgba(48, 58, 152, 0.25) !important;
+    border-radius: 8px !important;
+}
+
+nav[role="navigation"] .inline-flex.shadow-sm > a:hover,
+nav[role="navigation"] .inline-flex.rounded-md > a:hover {
+    border-color: var(--stic-primary) !important;
+    color: var(--stic-primary) !important;
+    background-color: var(--stic-primary-soft) !important;
+}
+
+nav[role="navigation"] svg {
+    width: 15px !important;
+    height: 15px !important;
+}
+
+
 

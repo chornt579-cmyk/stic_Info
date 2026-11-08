@@ -794,7 +794,7 @@
             </div>
 
             <div style="margin-top: 1rem;">
-                {{ $teachers->appends(['tab' => 'teachers'])->links() }}
+                {{ $teachers->appends(array_merge(request()->query(), ['tab' => 'teachers']))->fragment('teachers')->links() }}
             </div>
         </div>
     </div>
@@ -887,7 +887,7 @@
             </div>
 
             <div style="margin-top: 1rem;">
-                {{ $students->appends(request()->query())->links() }}
+                {{ $students->appends(array_merge(request()->query(), ['tab' => 'students']))->fragment('students')->links() }}
             </div>
         </div>
     </div>
@@ -1119,7 +1119,7 @@
             </div>
 
             <div style="margin-top: 1rem;">
-                {{ $schedules->appends(request()->query())->links() }}
+                {{ $schedules->appends(array_merge(request()->query(), ['tab' => 'schedules']))->fragment('schedules')->links() }}
             </div>
         </div>
     </div>
@@ -1452,7 +1452,7 @@
             </div>
 
             <div style="margin-top: 1rem;">
-                {{ $allAnnouncements->appends(['tab' => 'announcements'])->links() }}
+                {{ $allAnnouncements->appends(array_merge(request()->query(), ['tab' => 'announcements']))->fragment('announcements')->links() }}
             </div>
         </div>
     </div>
@@ -1524,7 +1524,7 @@
             </div>
 
             <div style="margin-top: 1rem;">
-                {{ $auditLogs->appends(['tab' => 'audit-logs'])->links() }}
+                {{ $auditLogs->appends(array_merge(request()->query(), ['tab' => 'audit-logs']))->fragment('audit-logs')->links() }}
             </div>
         </div>
     </div>

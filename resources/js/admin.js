@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 5. Store active tab in URL hash without page reload
         if (history.replaceState) {
-            history.replaceState(null, '', '#' + targetTabId);
+            history.replaceState(null, '', window.location.pathname + window.location.search + '#' + targetTabId);
         } else {
             window.location.hash = targetTabId;
         }
@@ -185,11 +185,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // G. Handle initial tab on page load
+    // G. Handle initial tab on page load (Hash, query param, or pagination context)
+    const urlParams = new URLSearchParams(window.location.search);
+    let targetTab = null;
+    let shouldAutoScroll = false;
+
     const initialHash = window.location.hash.replace('#', '');
     if (initialHash && document.getElementById('panel-' + initialHash)) {
-        switchAdminTab(initialHash, false);
+        targetTab = initialHash;
+        shouldAutoScroll = (initialHash !== 'overview');
+    } else if (urlParams.get('tab') && document.getElementById('panel-' + urlParams.get('tab'))) {
+        targetTab = urlParams.get('tab');
+        shouldAutoScroll = true;
+    } else if (urlParams.has('logs_page') && document.getElementById('panel-audit-logs')) {
+        targetTab = 'audit-logs';
+        shouldAutoScroll = true;
+    } else if (urlParams.has('students_page') && document.getElementById('panel-students')) {
+        targetTab = 'students';
+        shouldAutoScroll = true;
+    } else if (urlParams.has('schedules_page') && document.getElementById('panel-schedules')) {
+        targetTab = 'schedules';
+        shouldAutoScroll = true;
+    } else if (urlParams.has('announcements_page') && document.getElementById('panel-announcements')) {
+        targetTab = 'announcements';
+        shouldAutoScroll = true;
+    } else if (urlParams.has('teachers_page') && document.getElementById('panel-teachers')) {
+        targetTab = 'teachers';
+        shouldAutoScroll = true;
     } else {
-        switchAdminTab('overview', false);
+        targetTab = 'overview';
+        shouldAutoScroll = false;
     }
+
+    switchAdminTab(targetTab, shouldAutoScroll);
 });

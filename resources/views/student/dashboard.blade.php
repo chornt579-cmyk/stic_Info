@@ -514,7 +514,7 @@
                 @endforeach
 
                 <div style="margin-top: 1rem;">
-                    {{ $announcements->links() }}
+                    {{ $announcements->appends(request()->query())->fragment('tab-announcements')->links() }}
                 </div>
             </div>
         @endif

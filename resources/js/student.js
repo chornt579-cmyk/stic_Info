@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (history.replaceState) {
-            history.replaceState(null, null, '#' + tabId);
+            history.replaceState(null, null, window.location.pathname + window.location.search + '#' + tabId);
         } else {
             window.location.hash = tabId;
         }
@@ -125,10 +125,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Check URL hash on load
+    // Check URL hash or query params on load
+    const urlParams = new URLSearchParams(window.location.search);
     const hash = window.location.hash ? window.location.hash.substring(1) : '';
+
     if (hash && document.getElementById(hash)) {
-        switchStudentTab(hash);
+        switchStudentTab(hash, hash !== 'tab-overview');
+    } else if (urlParams.get('tab') && document.getElementById(urlParams.get('tab'))) {
+        switchStudentTab(urlParams.get('tab'), true);
+    } else if (urlParams.has('page') && document.getElementById('tab-announcements')) {
+        switchStudentTab('tab-announcements', true);
     } else {
         syncSidebarActive('tab-overview');
     }
