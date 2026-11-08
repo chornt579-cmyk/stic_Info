@@ -181,12 +181,12 @@
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
     <div>
         <h1 style="font-size: 1.5rem; color: var(--dark); display: flex; align-items: center; gap: 0.5rem;">
-            👨‍🏫 {{ __('messages.teacher_greeting') }}, {{ $user->name }}
+             {{ __('messages.teacher_greeting') }}, {{ $user->name }}
         </h1>
         <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.2rem;">
-            🏫 {{ __('messages.departments') }}: <strong>{{ $user->department->name_kh ?? $user->department->name ?? 'STIC' }}</strong>
+             {{ __('messages.departments') }}: <strong>{{ $user->department->name_kh ?? $user->department->name ?? 'STIC' }}</strong>
             @if($user->phone)
-                · 📞 {{ $user->phone }}
+                ·  {{ $user->phone }}
             @endif
         </p>
     </div>
@@ -199,19 +199,19 @@
 <!-- Key Workload Stats -->
 <div class="stat-grid">
     <div class="stat-card">
-        <div class="stat-title">📚 {{ __('messages.assigned_classes') }}</div>
+        <div class="stat-title"> {{ __('messages.assigned_classes') }}</div>
         <div class="stat-value">{{ $classes->count() }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-title">🗓️ {{ __('messages.weekly_teaching_slots') }}</div>
+        <div class="stat-title"> {{ __('messages.weekly_teaching_slots') }}</div>
         <div class="stat-value">{{ $schedules->count() }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-title">⏰ {{ __('messages.today_teaching_slots') }}</div>
+        <div class="stat-title"> {{ __('messages.today_teaching_slots') }}</div>
         <div class="stat-value" style="color: var(--primary);">{{ $todaySchedules->count() }}</div>
     </div>
     <div class="stat-card">
-        <div class="stat-title">👥 {{ __('messages.total_students_taught') }}</div>
+        <div class="stat-title"> {{ __('messages.total_students_taught') }}</div>
         <div class="stat-value">{{ $totalStudentsTaught }}</div>
     </div>
 </div>
@@ -219,19 +219,19 @@
 <!-- Navigation Tabs -->
 <div class="teacher-tabs" role="tablist" aria-label="Teacher Dashboard Tabs">
     <button type="button" class="teacher-tab-btn active" data-teacher-tab="tab-overview" role="tab" aria-selected="true">
-        📊 {{ __('messages.tab_overview') }}
+         {{ __('messages.tab_overview') }}
     </button>
     <button type="button" class="teacher-tab-btn" data-teacher-tab="tab-weekly" role="tab" aria-selected="false">
-        🗓️ {{ __('messages.tab_weekly_schedule') }}
+         {{ __('messages.tab_weekly_schedule') }}
     </button>
     <button type="button" class="teacher-tab-btn" data-teacher-tab="tab-classes" role="tab" aria-selected="false">
-        🏫 {{ __('messages.tab_classes') }}
+         {{ __('messages.tab_classes') }}
     </button>
     <button type="button" class="teacher-tab-btn" data-teacher-tab="tab-announcements" role="tab" aria-selected="false">
-        📢 {{ __('messages.tab_announcements') }}
+         {{ __('messages.tab_announcements') }}
     </button>
     <button type="button" class="teacher-tab-btn" data-teacher-tab="tab-profile" role="tab" aria-selected="false">
-        ⚙️ {{ __('messages.tab_profile') }}
+         {{ __('messages.tab_profile') }}
     </button>
 </div>
 
@@ -242,13 +242,13 @@
         <div>
             <div class="card" style="border-top: 4px solid var(--primary);">
                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2 class="card-title">📖 {{ __('messages.today_schedule') }} ({{ __('messages.' . $today) }})</h2>
+                    <h2 class="card-title"> {{ __('messages.today_schedule') }} ({{ __('messages.' . $today) }})</h2>
                     <span class="badge" style="background: #e8f0fe; color: var(--primary);">{{ now()->timezone('Asia/Phnom_Penh')->format('d M Y') }}</span>
                 </div>
 
                 @if ($todaySchedules->isEmpty())
                     <div style="text-align: center; color: var(--text-muted); padding: 2.5rem 1rem;">
-                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
+                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"></div>
                         <p style="font-size: 1rem; font-weight: 500;">{{ __('messages.no_classes_today') }}</p>
                         <p style="font-size: 0.85rem; margin-top: 0.3rem;">លោកគ្រូ/អ្នកគ្រូមិនមានកាលវិភាគបង្រៀនសម្រាប់ថ្ងៃនេះឡើយ។</p>
                     </div>
@@ -281,7 +281,7 @@
                                         <td><span style="font-weight: 500; color: var(--dark);">{{ $sch->subject }}</span></td>
                                         <td>
                                             <span style="background: #f1f3f4; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">
-                                                🚪 {{ $sch->room ?? ($sch->schoolClass->room ?? 'N/A') }}
+                                                 {{ $sch->room ?? ($sch->schoolClass->room ?? 'N/A') }}
                                             </span>
                                         </td>
                                     </tr>
@@ -297,7 +297,7 @@
         <div>
             <div class="card" style="border-top: 4px solid var(--secondary);">
                 <div class="card-header">
-                    <h2 class="card-title">📢 {{ __('messages.internal_announcements') }}</h2>
+                    <h2 class="card-title"> {{ __('messages.internal_announcements') }}</h2>
                 </div>
                 @if ($internalAnnouncements->isEmpty())
                     <p style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
@@ -314,7 +314,7 @@
                                     {{ $ann->content }}
                                 </p>
                                 <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">
-                                    ✍️ {{ $ann->author->name ?? 'Admin' }} · {{ $ann->created_at->diffForHumans() }}
+                                     {{ $ann->author->name ?? 'Admin' }} · {{ $ann->created_at->diffForHumans() }}
                                 </span>
                             </div>
                         @endforeach
@@ -330,7 +330,7 @@
     <div class="card">
         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
             <div>
-                <h2 class="card-title">🗓️ {{ __('messages.weekly_schedule') }} (ច័ន្ទ - អាទិត្យ)</h2>
+                <h2 class="card-title"> {{ __('messages.weekly_schedule') }} (ច័ន្ទ - អាទិត្យ)</h2>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
                     គ្របដណ្ដប់ទាំង ៧ ថ្ងៃក្នុងសប្ដាហ៍ ទាំងថ្នាក់ធម្មតា និងវគ្គបច្ចេកទេសចុងសប្ដាហ៍
                 </p>
@@ -353,7 +353,7 @@
 
         @if ($schedules->isEmpty())
             <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📅</div>
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"></div>
                 <p style="font-size: 1rem; font-weight: 500;">{{ __('messages.no_schedule_assigned') }}</p>
             </div>
         @else
@@ -364,7 +364,7 @@
                 <div class="schedule-day-block" data-day-section="{{ $dayKey }}">
                     <div class="schedule-day-header">
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span>🗓️ {{ __('messages.' . $dayKey) }}</span>
+                            <span> {{ __('messages.' . $dayKey) }}</span>
                             @if ($dayKey === $today)
                                 <span class="badge" style="background: #34a853; color: #ffffff; font-size: 0.75rem;">{{ __('messages.today') }}</span>
                             @endif
@@ -407,7 +407,7 @@
                                             <td>{{ $sch->subject }}</td>
                                             <td>
                                                 <span style="background: #f1f3f4; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">
-                                                    🚪 {{ $sch->room ?? ($sch->schoolClass->room ?? 'N/A') }}
+                                                     {{ $sch->room ?? ($sch->schoolClass->room ?? 'N/A') }}
                                                 </span>
                                             </td>
                                         </tr>
@@ -426,12 +426,12 @@
 <div id="tab-classes" class="teacher-tab-content hidden" style="display: none;">
     <div class="card">
         <div class="card-header">
-            <h2 class="card-title">🏫 {{ __('messages.assigned_classes') }} ({{ $classes->count() }})</h2>
+            <h2 class="card-title"> {{ __('messages.assigned_classes') }} ({{ $classes->count() }})</h2>
         </div>
 
         @if ($classes->isEmpty())
             <div style="text-align: center; color: var(--text-muted); padding: 3rem 1rem;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👨‍🏫</div>
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;"></div>
                 <p style="font-size: 1rem; font-weight: 500;">{{ __('messages.no_classes_assigned') }}</p>
             </div>
         @else
@@ -453,12 +453,12 @@
                         </div>
 
                         <div style="margin-bottom: 1rem; font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.3rem;">
-                            <div>🕒 {{ __('messages.shift') }}: <strong>{{ ucfirst($c->shift) }}</strong></div>
-                            <div>🚪 {{ __('messages.room') }}: <strong>{{ $c->room ?? 'N/A' }}</strong> ({{ __('messages.floor') }} {{ $c->floor ?? '-' }})</div>
+                            <div> {{ __('messages.shift') }}: <strong>{{ ucfirst($c->shift) }}</strong></div>
+                            <div> {{ __('messages.room') }}: <strong>{{ $c->room ?? 'N/A' }}</strong> ({{ __('messages.floor') }} {{ $c->floor ?? '-' }})</div>
                             @if($c->pivot->subject)
-                                <div>📘 {{ __('messages.subject') }}: <strong>{{ $c->pivot->subject }}</strong></div>
+                                <div> {{ __('messages.subject') }}: <strong>{{ $c->pivot->subject }}</strong></div>
                             @endif
-                            <div>👥 {{ __('messages.students_count') }}: <strong>{{ $c->students_count }} នាក់</strong></div>
+                            <div> {{ __('messages.students_count') }}: <strong>{{ $c->students_count }} នាក់</strong></div>
                         </div>
 
                         <div style="border-top: 1px solid var(--border); padding-top: 0.8rem;">
@@ -466,7 +466,7 @@
                                     class="btn btn-secondary btn-sm" 
                                     style="width: 100%; text-align: center;"
                                     data-announce-class-id="{{ $c->id }}">
-                                📢 {{ __('messages.post_announcement') }}
+                                 {{ __('messages.post_announcement') }}
                             </button>
                         </div>
                     </div>
@@ -483,12 +483,12 @@
         <div>
             <div class="card" style="border-top: 4px solid var(--primary);">
                 <div class="card-header">
-                    <h2 class="card-title">✍️ {{ __('messages.post_announcement') }}</h2>
+                    <h2 class="card-title"> {{ __('messages.post_announcement') }}</h2>
                 </div>
 
                 @if ($classes->isEmpty())
                     <p style="color: var(--text-muted); padding: 1.5rem;">
-                        ⚠️ {{ __('messages.no_classes_assigned') }}
+                         {{ __('messages.no_classes_assigned') }}
                     </p>
                 @else
                     <form action="{{ route('teacher.announcements.store') }}" method="POST">
@@ -504,7 +504,7 @@
                                 @endforeach
                             </select>
                             <small style="color: var(--text-muted); font-size: 0.8rem;">
-                                🔒 {{ __('messages.only_teaching_classes_allowed') }}
+                                 {{ __('messages.only_teaching_classes_allowed') }}
                             </small>
                         </div>
 
@@ -528,12 +528,12 @@
                                       required 
                                       placeholder="សរសេរខ្លឹមសារលម្អិតនៅទីនេះ..."></textarea>
                             <small style="color: var(--text-muted); font-size: 0.8rem;">
-                                ⏱️ កម្រិតការពារ Rate Limit: អនុញ្ញាតអតិបរមា ១០ ដង/ម៉ោង
+                                 កម្រិតការពារ Rate Limit: អនុញ្ញាតអតិបរមា ១០ ដង/ម៉ោង
                             </small>
                         </div>
 
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            🚀 {{ __('messages.publish') }}
+                             {{ __('messages.publish') }}
                         </button>
                     </form>
                 @endif
@@ -544,7 +544,7 @@
         <div>
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">📋 {{ __('messages.sent_announcements') }}</h2>
+                    <h2 class="card-title"> {{ __('messages.sent_announcements') }}</h2>
                 </div>
 
                 @if ($sentAnnouncements->isEmpty())
@@ -570,7 +570,7 @@
                                                 class="btn btn-danger btn-sm" 
                                                 style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" 
                                                 title="{{ __('messages.delete') }}">
-                                            🗑️
+                                            
                                         </button>
                                     </form>
                                 </div>
@@ -578,7 +578,7 @@
                                     {{ $ann->content }}
                                 </p>
                                 <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">
-                                    🕒 {{ $ann->created_at->diffForHumans() }}
+                                     {{ $ann->created_at->diffForHumans() }}
                                 </span>
                             </div>
                         @endforeach
@@ -595,7 +595,7 @@
         <!-- Contact & Profile Details -->
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">👤 {{ __('messages.profile') }}</h2>
+                <h2 class="card-title"> {{ __('messages.profile') }}</h2>
             </div>
             
             <form action="{{ route('teacher.profile.update') }}" method="POST">
@@ -630,7 +630,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                    💾 {{ __('messages.save') }}
+                     {{ __('messages.save') }}
                 </button>
             </form>
         </div>
@@ -638,7 +638,7 @@
         <!-- Change Password Card -->
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">🔒 {{ __('messages.change_password') }}</h2>
+                <h2 class="card-title"> {{ __('messages.change_password') }}</h2>
             </div>
 
             <form action="{{ route('password.change') }}" method="POST">
@@ -675,7 +675,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-warning" style="width: 100%;">
-                    🔐 {{ __('messages.change_password') }}
+                     {{ __('messages.change_password') }}
                 </button>
             </form>
         </div>

@@ -8,7 +8,7 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
         <div>
             <h1 style="font-size: 1.6rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;">
-                <span aria-hidden="true">🛠️</span> {{ __('messages.admin_dashboard_title') }}
+                {{ __('messages.admin_dashboard_title') }}
             </h1>
             <p style="color: #64748b; font-size: 0.92rem; margin-top: 0.25rem;">
                 {{ __('messages.institute_name') }}
@@ -67,31 +67,31 @@
     <!-- 2. TABS SUB-NAVIGATION -->
     <div style="display: flex; gap: 0.5rem; border-bottom: 2px solid #e2e8f0; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.4rem;" role="tablist" aria-label="Admin Navigation Tabs">
         <button type="button" class="admin-tab-btn tab-btn {{ $pendingTeachers->count() > 0 ? 'tab-active' : 'tab-active' }}" data-tab="approvals" role="tab" aria-selected="true">
-            <span aria-hidden="true">⏳</span> {{ __('messages.pending_approvals') }}
+            {{ __('messages.pending_approvals') }}
             @if ($pendingTeachers->count() > 0)
                 <span class="badge badge-danger" style="margin-left: 6px; font-size: 0.75rem;">{{ $pendingTeachers->count() }}</span>
             @endif
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="departments" role="tab" aria-selected="false">
-            <span aria-hidden="true">📁</span> {{ __('messages.departments') }}
+            {{ __('messages.departments') }}
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="classes" role="tab" aria-selected="false">
-            <span aria-hidden="true">🏫</span> {{ __('messages.classes') }}
+            {{ __('messages.classes') }}
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="teachers" role="tab" aria-selected="false">
-            <span aria-hidden="true">👨‍🏫</span> {{ __('messages.teachers') }}
+            {{ __('messages.teachers') }}
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="students" role="tab" aria-selected="false">
-            <span aria-hidden="true">🎓</span> {{ __('messages.students') }}
+            {{ __('messages.students') }}
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="schedules" role="tab" aria-selected="false">
-            <span aria-hidden="true">🗓️</span> {{ __('messages.schedules') }}
+            {{ __('messages.schedules') }}
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="rooms" role="tab" aria-selected="false">
-            <span aria-hidden="true">🚪</span> {{ __('messages.rooms') }}
+            {{ __('messages.rooms') }}
         </button>
         <button type="button" class="admin-tab-btn tab-btn tab-inactive" data-tab="audit-logs" role="tab" aria-selected="false">
-            <span aria-hidden="true">📜</span> {{ __('messages.audit_logs') }}
+            {{ __('messages.audit_logs') }}
         </button>
     </div>
 
@@ -111,7 +111,7 @@
 
             @if ($pendingTeachers->isEmpty())
                 <div style="text-align: center; padding: 3rem 1rem; color: #64748b;">
-                    <div style="font-size: 3rem; margin-bottom: 0.5rem;" aria-hidden="true">🎉</div>
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;" aria-hidden="true"></div>
                     <p style="font-weight: 600;">គ្មានសំណើសុំចុះឈ្មោះគ្រូដែលកំពុងរង់ចាំឡើយ!</p>
                     <p style="font-size: 0.85rem;">គ្រូទាំងអស់ត្រូវបានអនុម័តរួចរាល់។</p>
                 </div>
@@ -149,7 +149,7 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-sm" style="background: #34a853; color: #ffffff; padding: 0.35rem 0.8rem; font-size: 0.85rem; border-radius: 6px;">
-                                                    ✅ {{ __('messages.approve') }}
+                                                     {{ __('messages.approve') }}
                                                 </button>
                                             </form>
 
@@ -158,7 +158,7 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-sm" style="background: #ea4335; color: #ffffff; padding: 0.35rem 0.8rem; font-size: 0.85rem; border-radius: 6px;">
-                                                    ❌ {{ __('messages.reject') }}
+                                                     {{ __('messages.reject') }}
                                                 </button>
                                             </form>
                                         </div>
@@ -180,7 +180,7 @@
             <!-- Create Department Form -->
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
-                    ➕ {{ __('messages.create') }} {{ __('messages.departments') }}
+                     {{ __('messages.create') }} {{ __('messages.departments') }}
                 </h3>
                 <form action="{{ route('admin.departments.store') }}" method="POST">
                     @csrf
@@ -209,7 +209,7 @@
             <!-- Departments Table -->
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
-                    📁 បញ្ជីដេប៉ាតឺម៉ង់ ({{ $departments->count() }})
+                     បញ្ជីដេប៉ាតឺម៉ង់ ({{ $departments->count() }})
                 </h3>
                 <div style="overflow-x: auto; width: 100%;">
                     <table class="table" style="width: 100%; border-collapse: collapse;">
@@ -258,7 +258,7 @@
             <!-- Create Class Form -->
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
-                    ➕ {{ __('messages.create') }} {{ __('messages.classes') }}
+                     {{ __('messages.create') }} {{ __('messages.classes') }}
                 </h3>
                 <form action="{{ route('admin.classes.store') }}" method="POST">
                     @csrf
@@ -312,7 +312,7 @@
             <!-- Classes Table -->
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
-                    🏫 បញ្ជីថ្នាក់រៀន ({{ $classes->count() }})
+                     បញ្ជីថ្នាក់រៀន ({{ $classes->count() }})
                 </h3>
                 <div style="overflow-x: auto; width: 100%;">
                     <table class="table" style="width: 100%; border-collapse: collapse;">
@@ -366,7 +366,7 @@
         <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
                 <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b;">
-                    👨‍🏫 បញ្ជីគ្រូបង្រៀនទាំងអស់ (Teachers Directory)
+                     បញ្ជីគ្រូបង្រៀនទាំងអស់ (Teachers Directory)
                 </h3>
             </div>
 
@@ -453,7 +453,7 @@
         <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                 <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b;">
-                    🎓 បញ្ជីសិស្ស/និស្សិត (Students Directory)
+                     បញ្ជីសិស្ស/និស្សិត (Students Directory)
                 </h3>
 
                 <!-- Search and Filter Form -->
@@ -542,10 +542,10 @@
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
                     <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">
-                        ➕ {{ __('messages.create') }} {{ __('messages.schedules') }}
+                         {{ __('messages.create') }} {{ __('messages.schedules') }}
                     </h3>
                     <span class="badge" style="background: #e8f0fe; color: #1a73e8; font-size: 0.75rem;">
-                        ⚡ ម៉ាស៊ីនទប់ស្កាត់ការជាន់ម៉ោងស្វ័យប្រវត្តិ
+                         ម៉ាស៊ីនទប់ស្កាត់ការជាន់ម៉ោងស្វ័យប្រវត្តិ
                     </span>
                 </div>
                 <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 1rem;">
@@ -633,7 +633,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        💾 {{ __('messages.save') }} {{ __('messages.schedules') }}
+                         {{ __('messages.save') }} {{ __('messages.schedules') }}
                     </button>
                 </form>
             </div>
@@ -642,7 +642,7 @@
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.8rem;">
                     <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">
-                        🗓️ បញ្ជីកាលវិភាគបង្រៀន ({{ $schedules->total() }})
+                         បញ្ជីកាលវិភាគបង្រៀន ({{ $schedules->total() }})
                     </h3>
 
                     <!-- Filter by Class and Day -->
@@ -706,10 +706,10 @@
                                         {{ $sch->subject }}
                                     </td>
                                     <td style="padding: 0.65rem;">
-                                        👨‍🏫 {{ $sch->teacher->name ?? '-' }}
+                                         {{ $sch->teacher->name ?? '-' }}
                                     </td>
                                     <td style="padding: 0.65rem;">
-                                        🚪 {{ $sch->display_room }}
+                                         {{ $sch->display_room }}
                                     </td>
                                     <td style="padding: 0.65rem; text-align: right;">
                                         <form action="{{ route('admin.schedules.destroy', $sch) }}" method="POST" onsubmit="return confirm('{{ __('messages.confirm_delete') }}');" style="display: inline;">
@@ -747,7 +747,7 @@
             <!-- Create Room Form -->
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
-                    ➕ {{ __('messages.create') }} {{ __('messages.rooms') }}
+                     {{ __('messages.create') }} {{ __('messages.rooms') }}
                 </h3>
                 <form action="{{ route('admin.rooms.store') }}" method="POST">
                     @csrf
@@ -789,7 +789,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        💾 {{ __('messages.save') }} {{ __('messages.rooms') }}
+                         {{ __('messages.save') }} {{ __('messages.rooms') }}
                     </button>
                 </form>
             </div>
@@ -797,7 +797,7 @@
             <!-- Rooms Table -->
             <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: #1e293b;">
-                    🚪 បញ្ជីបន្ទប់រៀន & រោងជាង ({{ $rooms->count() }})
+                     បញ្ជីបន្ទប់រៀន & រោងជាង ({{ $rooms->count() }})
                 </h3>
 
                 <div style="overflow-x: auto; width: 100%;">
@@ -868,10 +868,10 @@
         <div class="card" style="background: #ffffff; padding: 1.5rem; border-radius: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
                 <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b;">
-                    📜 កំណត់ត្រាសវនកម្មប្រព័ន្ធ (Immutable Audit Logs Trail)
+                     កំណត់ត្រាសវនកម្មប្រព័ន្ធ (Immutable Audit Logs Trail)
                 </h3>
                 <span class="badge" style="background: #e2e8f0; color: #475569; font-size: 0.82rem;">
-                    🔒 រក្សាទុកអចិន្ត្រៃយ៍ គ្មាន Soft Delete គ្មាន Update
+                     រក្សាទុកអចិន្ត្រៃយ៍ គ្មាន Soft Delete គ្មាន Update
                 </span>
             </div>
 

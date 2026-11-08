@@ -36,86 +36,68 @@
                 <nav class="sidebar-nav">
                     <span class="sidebar-nav-header">ផ្ទាំងចម្បង (Main Menu)</span>
                     <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard', 'admin.dashboard', 'teacher.dashboard', 'student.dashboard') ? 'active' : '' }}">
-                        <span class="sidebar-icon" aria-hidden="true">📊</span>
-                        <span>{{ __('messages.dashboard') }}</span>
+                                                <span>{{ __('messages.dashboard') }}</span>
                     </a>
 
                     @if(Auth::user()->isAdmin())
                         <span class="sidebar-nav-header">ការគ្រប់គ្រងស្ថាប័ន (Administration)</span>
                         <a href="{{ route('admin.dashboard') }}#approvals" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">⏳</span>
-                            <span>{{ __('messages.pending_approvals') }}</span>
+                                                        <span>{{ __('messages.pending_approvals') }}</span>
                         </a>
                         <a href="{{ route('admin.dashboard') }}#departments" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">📁</span>
-                            <span>{{ __('messages.departments') }}</span>
+                                                        <span>{{ __('messages.departments') }}</span>
                         </a>
                         <a href="{{ route('admin.dashboard') }}#classes" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">🏫</span>
-                            <span>{{ __('messages.classes') }}</span>
+                                                        <span>{{ __('messages.classes') }}</span>
                         </a>
                         <a href="{{ route('admin.dashboard') }}#teachers" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">👨‍🏫</span>
-                            <span>{{ __('messages.teachers') }}</span>
+                                                        <span>{{ __('messages.teachers') }}</span>
                         </a>
                         <a href="{{ route('admin.dashboard') }}#students" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">🎓</span>
-                            <span>{{ __('messages.students') }}</span>
+                                                        <span>{{ __('messages.students') }}</span>
                         </a>
                         <a href="{{ route('admin.dashboard') }}#schedules" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">🗓️</span>
-                            <span>{{ __('messages.schedules') }}</span>
+                                                        <span>{{ __('messages.schedules') }}</span>
                         </a>
                         <a href="{{ route('admin.dashboard') }}#rooms" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">🚪</span>
-                            <span>{{ __('messages.rooms') }}</span>
+                                                        <span>{{ __('messages.rooms') }}</span>
                         </a>
                         <a href="{{ route('admin.dashboard') }}#audit-logs" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">📜</span>
-                            <span>{{ __('messages.audit_logs') }}</span>
+                                                        <span>{{ __('messages.audit_logs') }}</span>
                         </a>
                     @elseif(Auth::user()->isTeacher())
                         <span class="sidebar-nav-header">ភារកិច្ចបង្រៀន (Teaching)</span>
                         <a href="{{ route('teacher.dashboard') }}#tab-weekly" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">🗓️</span>
-                            <span>{{ __('messages.weekly_schedule') }}</span>
+                                                        <span>{{ __('messages.weekly_schedule') }}</span>
                         </a>
                         <a href="{{ route('teacher.dashboard') }}#tab-classes" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">🏫</span>
-                            <span>{{ __('messages.assigned_classes') }}</span>
+                                                        <span>{{ __('messages.assigned_classes') }}</span>
                         </a>
                         <a href="{{ route('teacher.dashboard') }}#tab-announcements" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">📢</span>
-                            <span>{{ __('messages.announcements') }}</span>
+                                                        <span>{{ __('messages.announcements') }}</span>
                         </a>
                         <a href="{{ route('teacher.dashboard') }}#tab-profile" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">⚙️</span>
-                            <span>{{ __('messages.profile') }}</span>
+                                                        <span>{{ __('messages.profile') }}</span>
                         </a>
                     @elseif(Auth::user()->isStudent())
                         <span class="sidebar-nav-header">ការសិក្សា (Academic)</span>
                         <a href="{{ route('student.dashboard') }}#tab-weekly" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">🗓️</span>
-                            <span>{{ __('messages.weekly_schedule') }}</span>
+                                                        <span>{{ __('messages.weekly_schedule') }}</span>
                         </a>
                         <a href="{{ route('student.dashboard') }}#tab-announcements" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">📢</span>
-                            <span>{{ __('messages.announcements') }}</span>
+                                                        <span>{{ __('messages.announcements') }}</span>
                         </a>
                         <a href="{{ route('student.dashboard') }}#tab-classmates" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">👥</span>
-                            <span>{{ __('messages.tab_my_class') }}</span>
+                                                        <span>{{ __('messages.tab_my_class') }}</span>
                         </a>
                         <a href="{{ route('student.dashboard') }}#tab-profile" class="sidebar-link">
-                            <span class="sidebar-icon" aria-hidden="true">⚙️</span>
-                            <span>{{ __('messages.profile') }}</span>
+                                                        <span>{{ __('messages.profile') }}</span>
                         </a>
                     @endif
 
                     <span class="sidebar-nav-header">ព័ត៌មានទូទៅ (General)</span>
                     <a href="{{ route('home') }}" class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}">
-                        <span class="sidebar-icon" aria-hidden="true">🌐</span>
-                        <span>{{ __('messages.home') }}</span>
+                                                <span>{{ __('messages.home') }}</span>
                     </a>
                 </nav>
 

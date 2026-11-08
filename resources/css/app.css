@@ -195,40 +195,28 @@ h1, h2, h3, h4, h5, h6, p, span, a, button, input, label {
 .sidebar-link {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.65rem 0.85rem;
+    padding: 0.65rem 1rem;
     color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
     font-size: 0.92rem;
     font-weight: 500;
     border-radius: 8px;
-    transition: all 0.15s ease-in-out;
+    transition: all 0.18s ease-in-out;
     position: relative;
 }
 
 .sidebar-link:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     color: #ffffff;
+    padding-left: 1.25rem;
 }
 
 .sidebar-link.active {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.18);
     color: #ffffff;
     font-weight: 600;
-    box-shadow: inset 3px 0 0 var(--stic-secondary);
-}
-
-.sidebar-link.active .sidebar-icon {
-    color: var(--stic-secondary);
-}
-
-.sidebar-icon {
-    font-size: 1.15rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    flex-shrink: 0;
+    box-shadow: inset 4px 0 0 var(--stic-secondary);
+    padding-left: 1.25rem;
 }
 
 .sidebar-footer {
@@ -838,6 +826,22 @@ tr:hover td {
 .tab-btn.tab-inactive {
     color: var(--stic-muted);
     background: transparent;
+}
+
+.admin-tab-btn {
+    flex: initial;
+    padding: 0.6rem 1.15rem;
+    white-space: nowrap;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 3px solid transparent;
+}
+
+.admin-tab-btn.tab-active {
+    background: #ffffff;
+    color: var(--stic-primary);
+    border-bottom-color: var(--stic-primary);
+    box-shadow: none;
+    font-weight: 700;
 }
 
 /* Role Selector Grid */

@@ -57,6 +57,11 @@ class AdminTest extends TestCase
         $response->assertViewHas('classes');
         $response->assertViewHas('pendingTeachers');
         $response->assertViewHas('auditLogs');
+
+        $forbiddenEmojis = ['🛠', '⏳', '📁', '🏫', '🎓', '🚪', '📜', '➕'];
+        foreach ($forbiddenEmojis as $emoji) {
+            $response->assertDontSee($emoji);
+        }
     }
 
     public function test_non_admin_cannot_access_admin_dashboard(): void
