@@ -228,11 +228,11 @@
                     <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="public-brand-logo">
                     <div class="public-brand-text">
                         <span class="public-brand-title">{{ __('messages.institute_short') }}</span>
-                        <span class="public-brand-subtitle">{{ __('messages.hero_tagline') }}</span>
+                        <span class="public-brand-subtitle hidden md:block">{{ __('messages.hero_tagline') }}</span>
                     </div>
                 </a>
 
-                <div class="public-nav-wrapper" id="public-nav-wrapper">
+                <div class="public-nav-wrapper hidden md:flex" id="public-nav-wrapper">
                     <ul class="public-nav-links" role="navigation" aria-label="Public Navigation">
                         <li><a href="{{ route('home') }}" class="public-nav-link">{{ __('messages.home') }}</a></li>
                         <li><a href="{{ route('home') }}#departments" class="public-nav-link">{{ __('messages.academic_departments') }}</a></li>
@@ -254,7 +254,7 @@
                 </div>
 
                 <!-- Mobile Header Right Controls (Language Switcher + Mobile Drawer Hamburger) -->
-                <div class="public-mobile-controls">
+                <div class="public-mobile-controls flex md:hidden">
                     <div class="language-capsule mobile-language-capsule" aria-label="Language Selector">
                         <a href="{{ request()->fullUrlWithQuery(['lang' => 'km']) }}" class="language-btn {{ app()->getLocale() === 'km' ? 'active' : '' }}">ខ្មែរ</a>
                         <span style="color: #bdc1c6;">|</span>
