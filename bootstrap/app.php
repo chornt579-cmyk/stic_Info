@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Trust all reverse proxies (GitHub Codespaces, Cloudflare, Load Balancers)
+        $middleware->trustProxies(at: '*');
+
         // Global web middleware
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,

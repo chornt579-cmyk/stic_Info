@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Automatically force HTTPS when accessed through GitHub Codespaces or reverse proxy
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        } elseif (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
