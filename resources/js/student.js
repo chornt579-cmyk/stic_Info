@@ -1,14 +1,57 @@
 /**
  * STIC Info - Student Portal Scripts
- * WCAG AA accessible and CSP compliant (No inline JS)
+ * WCAG AA accessible, two-way sidebar sync, and CSP compliant
  */
 
 document.addEventListener('DOMContentLoaded', function () {
     const studentTabButtons = document.querySelectorAll('[data-student-tab]');
     const studentTabContents = document.querySelectorAll('.student-tab-content');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const overlay = document.getElementById('sidebar-overlay');
+    const sidebar = document.getElementById('app-sidebar');
 
-    function switchStudentTab(tabId) {
+    function syncSidebarActive(tabId) {
+        const activeTab = (!tabId || tabId === 'main-dashboard') ? 'tab-overview' : tabId;
+
+        sidebarLinks.forEach(function (link) {
+            const linkHref = link.getAttribute('href') || '';
+            const linkTab = link.getAttribute('data-sidebar-tab');
+
+            const isMatch = linkTab === activeTab || linkHref.endsWith('#' + activeTab);
+            if (isMatch) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+
+    function scrollToSection(targetTabId) {
+        if (!targetTabId || targetTabId === 'tab-overview' || targetTabId === 'main-dashboard') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        const tabsContainer = document.querySelector('.student-tabs') || document.getElementById(targetTabId);
+        if (tabsContainer) {
+            const topbarOffset = 76;
+            const topPos = tabsContainer.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({
+                top: Math.max(0, topPos - topbarOffset),
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    function switchStudentTab(tabId, shouldScroll = false) {
         if (!tabId) return;
+
+        if (tabId === 'main-dashboard') {
+            tabId = 'tab-overview';
+        }
+
+        const targetContent = document.getElementById(tabId);
+        if (!targetContent) return;
 
         studentTabButtons.forEach(btn => {
             if (btn.getAttribute('data-student-tab') === tabId) {
@@ -30,22 +73,70 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        if (history.pushState) {
-            history.pushState(null, null, '#' + tabId);
+        syncSidebarActive(tabId);
+
+        if (sidebar && sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (history.replaceState) {
+            history.replaceState(null, null, window.location.pathname + window.location.search + '#' + tabId);
+        } else {
+            window.location.hash = tabId;
+        }
+
+        if (shouldScroll) {
+            scrollToSection(tabId);
         }
     }
 
     studentTabButtons.forEach(btn => {
         btn.addEventListener('click', function () {
             const target = this.getAttribute('data-student-tab');
-            switchStudentTab(target);
+            switchStudentTab(target, true);
         });
     });
 
-    // Check URL hash on load
+    sidebarLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+            const href = this.getAttribute('href') || '';
+            const hashIndex = href.indexOf('#');
+            const dataTab = this.getAttribute('data-sidebar-tab');
+
+            if (hashIndex !== -1) {
+                const targetHash = href.substring(hashIndex + 1);
+                if (document.getElementById(targetHash)) {
+                    e.preventDefault();
+                    switchStudentTab(targetHash, true);
+                }
+            } else if (dataTab === 'main-dashboard' && document.getElementById('tab-overview')) {
+                e.preventDefault();
+                switchStudentTab('tab-overview', true);
+            }
+        });
+    });
+
+    window.addEventListener('hashchange', function () {
+        const hash = window.location.hash.replace('#', '');
+        if (hash && document.getElementById(hash)) {
+            switchStudentTab(hash);
+        }
+    });
+
+    // Check URL hash or query params on load
+    const urlParams = new URLSearchParams(window.location.search);
     const hash = window.location.hash ? window.location.hash.substring(1) : '';
+
     if (hash && document.getElementById(hash)) {
-        switchStudentTab(hash);
+        switchStudentTab(hash, hash !== 'tab-overview');
+    } else if (urlParams.get('tab') && document.getElementById(urlParams.get('tab'))) {
+        switchStudentTab(urlParams.get('tab'), true);
+    } else if (urlParams.has('page') && document.getElementById('tab-announcements')) {
+        switchStudentTab('tab-announcements', true);
+    } else {
+        syncSidebarActive('tab-overview');
     }
 
     // Weekly Schedule Day Filter Pills
