@@ -1,92 +1,49 @@
-name: CI — STIC Info Quality Check
+name: CI — STIC Info Quality & Test Suite
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  lint-and-validate:
-    name: Lint & Validate
+  laravel-ci:
+    name: Build, Quality Check & Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 18
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, dom, fileinfo, sqlite3, pdo_sqlite, bcmath, json
+          coverage: none
+
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
-          cache-dependency-path: functions/package.json
 
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
+      - name: Prepare Environment File
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Install Cloud Functions deps
-        run: cd functions && npm install
+      - name: Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Validate Firebase config files
+      - name: Generate Application Key
+        run: php artisan key:generate
+
+      - name: Install NPM Dependencies & Build Assets
         run: |
-          echo "✅ Checking firebase.json..."
-          cat firebase.json | python3 -m json.tool > /dev/null
-          echo "✅ Checking firestore.indexes.json..."
-          cat firestore.indexes.json | python3 -m json.tool > /dev/null
-          echo "✅ All JSON configs are valid"
+          npm ci
+          npm run build
 
-      - name: Check Firestore Rules syntax
-        run: |
-          # Install firestore emulator for rules check
-          firebase setup:emulators:firestore --non-interactive || true
-          echo "Rules file exists: $(test -f firestore.rules && echo yes || echo no)"
-
-      - name: Check HTML files exist
-        run: |
-          test -f public/index.html   && echo "✅ index.html" || echo "❌ index.html missing"
-          test -f public/app.html     && echo "✅ app.html"   || echo "❌ app.html missing"
-          test -f public/css/style.css && echo "✅ style.css" || echo "❌ style.css missing"
-
-  emulator-test:
-    name: Firebase Emulator Smoke Test
-    runs-on: ubuntu-latest
-    needs: lint-and-validate
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 18
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
-      - name: Install Functions dependencies
-        run: cd functions && npm install
-
-      - name: Start Emulators and run smoke test
-        run: |
-          # Start emulators in background, wait for them to be ready
-          firebase emulators:start --only auth,firestore --project demo-stic &
-          EMULATOR_PID=$!
-
-          echo "⏳ Waiting for emulators to start..."
-          sleep 15
-
-          # Smoke test: check that Firestore emulator is responding
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            http://localhost:8080/)
-          echo "Firestore emulator HTTP status: $HTTP_STATUS"
-
-          # Check Auth emulator
-          AUTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            http://localhost:9099/)
-          echo "Auth emulator HTTP status: $AUTH_STATUS"
-
-          kill $EMULATOR_PID || true
-          echo "✅ Emulator smoke test complete"
-
+      - name: Execute Automated Tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php artisan test
