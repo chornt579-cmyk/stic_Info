@@ -78,6 +78,7 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -90,6 +91,9 @@ body {
     flex-direction: column;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
 }
 
 /* Ensure Khmer script characters are never clipped vertically */
@@ -1091,6 +1095,27 @@ tr:hover td {
     height: 22px;
 }
 
+.public-mobile-controls {
+    display: none;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+}
+
+.public-main-content {
+    flex: 1;
+    padding: 2.25rem 1.5rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+    .public-main-content {
+        padding: 1.25rem 0.85rem;
+    }
+}
+
 /* --- Hero Section --- */
 .home-hero {
     background: linear-gradient(180deg, #F8F9FC 0%, #FFFFFF 100%);
@@ -1786,26 +1811,116 @@ tr:hover td {
 }
 
 @media (max-width: 768px) {
-    .public-nav-links {
+    .public-header-container {
+        padding: 0.65rem 1rem;
+        gap: 0.75rem;
+    }
+
+    .public-brand {
+        gap: 0.65rem;
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .public-brand-logo {
+        width: 38px;
+        height: 38px;
+    }
+
+    .public-brand-title {
+        font-size: 0.95rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Hide long brand subtitle on tablet & mobile to prevent any horizontal overflow */
+    .public-brand-subtitle {
         display: none;
+    }
+
+    /* Hide desktop nav wrapper by default */
+    .public-nav-wrapper {
+        display: none;
+    }
+
+    /* Display mobile top controls (Language switcher + Hamburger toggle) */
+    .public-mobile-controls {
+        display: flex;
     }
 
     .public-mobile-toggle {
         display: inline-flex;
     }
 
-    .public-nav-wrapper.mobile-active .public-nav-links {
+    .desktop-language-capsule {
+        display: none;
+    }
+
+    /* Full-screen sliding drawer for public mobile menu */
+    .public-nav-wrapper.mobile-active {
         display: flex;
         flex-direction: column;
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
+        width: 100%;
         background: #ffffff;
-        border-bottom: 1px solid var(--stic-border);
-        padding: 1.5rem;
-        gap: 1rem;
-        box-shadow: var(--shadow-lg);
+        border-bottom: 2px solid var(--stic-secondary);
+        padding: 1.25rem 1.15rem;
+        gap: 1.25rem;
+        box-shadow: 0 16px 36px -4px rgba(32, 41, 104, 0.18);
+        z-index: 1000;
+        animation: slideDownNav 0.22s ease-out forwards;
+    }
+
+    .public-nav-wrapper.mobile-active .public-nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .public-nav-wrapper.mobile-active .public-nav-link {
+        display: block;
+        padding: 0.7rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.98rem;
+        font-weight: 600;
+        color: var(--stic-text);
+        background: var(--stic-surface-muted);
+        border: 1px solid var(--stic-border-light);
+        text-decoration: none;
+        transition: all 0.18s ease;
+    }
+
+    .public-nav-wrapper.mobile-active .public-nav-link:hover {
+        background: var(--stic-primary-soft);
+        color: var(--stic-primary);
+        border-color: rgba(48, 58, 152, 0.2);
+    }
+
+    .public-nav-wrapper.mobile-active .public-nav-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        width: 100%;
+        padding-top: 1rem;
+        border-top: 1px solid var(--stic-border);
+    }
+
+    .public-nav-wrapper.mobile-active .public-nav-actions .btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        font-weight: 600;
     }
 
     .hero-title {
@@ -1823,21 +1938,58 @@ tr:hover td {
     }
 }
 
+@keyframes slideDownNav {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 480px) {
-    .public-brand-title {
-        font-size: 0.92rem;
+    .auth-card-wrapper {
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+        width: 100%;
     }
 
-    .public-brand-subtitle {
-        font-size: 0.68rem;
+    .auth-card {
+        padding: 1.5rem 1rem;
+        border-radius: 12px;
+        width: 100%;
+    }
+
+    .auth-header {
+        margin-bottom: 1.25rem;
+    }
+
+    .auth-brand-logo {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 0.65rem;
+    }
+
+    .auth-title {
+        font-size: 1.35rem;
+    }
+
+    .auth-subtitle {
+        font-size: 0.82rem;
+    }
+
+    .public-brand-title {
+        font-size: 0.88rem;
     }
 
     .hero-title {
-        font-size: 1.55rem;
+        font-size: 1.45rem;
     }
 
     .hero-desc {
-        font-size: 0.95rem;
+        font-size: 0.92rem;
     }
 
     .btn-hero-primary,
@@ -1847,8 +1999,8 @@ tr:hover td {
     }
 
     .hero-emblem-logo {
-        width: 170px;
-        height: 170px;
+        width: 150px;
+        height: 150px;
     }
 
     .footer-bottom-container {

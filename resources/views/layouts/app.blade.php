@@ -241,8 +241,8 @@
                     </ul>
 
                     <div class="public-nav-actions">
-                        <!-- Bilingual Language Capsule -->
-                        <div class="language-capsule" aria-label="Language Selector">
+                        <!-- Desktop Language Capsule -->
+                        <div class="language-capsule desktop-language-capsule" aria-label="Language Selector">
                             <a href="{{ request()->fullUrlWithQuery(['lang' => 'km']) }}" class="language-btn {{ app()->getLocale() === 'km' ? 'active' : '' }}">ខ្មែរ</a>
                             <span style="color: #bdc1c6;">|</span>
                             <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="language-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</a>
@@ -253,10 +253,18 @@
                     </div>
                 </div>
 
-                <!-- Mobile Hamburger Toggle -->
-                <button type="button" class="public-mobile-toggle" id="public-nav-toggle" aria-label="Toggle Public Menu" aria-expanded="false">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                </button>
+                <!-- Mobile Header Right Controls (Language Switcher + Mobile Drawer Hamburger) -->
+                <div class="public-mobile-controls">
+                    <div class="language-capsule mobile-language-capsule" aria-label="Language Selector">
+                        <a href="{{ request()->fullUrlWithQuery(['lang' => 'km']) }}" class="language-btn {{ app()->getLocale() === 'km' ? 'active' : '' }}">ខ្មែរ</a>
+                        <span style="color: #bdc1c6;">|</span>
+                        <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="language-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</a>
+                    </div>
+
+                    <button type="button" class="public-mobile-toggle" id="public-nav-toggle" aria-label="Toggle Public Menu" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -288,7 +296,7 @@
                 @yield('content')
             </div>
         @else
-            <main style="flex: 1; padding: 2.5rem 1.5rem; width: 100%; max-width: 1200px; margin: 0 auto;" role="main">
+            <main class="public-main-content" role="main">
                 @if (session('success'))
                     <div class="alert alert-success" role="alert">
                         <span class="alert-icon" aria-hidden="true">
