@@ -2,6 +2,12 @@
   "name": "STIC Info — Laravel Dev",
   "image": "mcr.microsoft.com/devcontainers/php:8.4",
 
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+
   // Forward Laravel port
   "forwardPorts": [8000],
   "portsAttributes": {
