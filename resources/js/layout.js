@@ -64,33 +64,32 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 3. Public Mobile Navigation Toggle
+    // 3. Public Mobile Navigation Drawer Toggle
     const publicNavToggle = document.getElementById('public-nav-toggle');
-    const publicNavWrapper = document.getElementById('public-nav-wrapper');
+    const publicMobileDrawer = document.getElementById('public-mobile-drawer');
 
-    if (publicNavToggle && publicNavWrapper) {
+    if (publicNavToggle && publicMobileDrawer) {
         publicNavToggle.addEventListener('click', function (e) {
             e.stopPropagation();
-            const isExpanded = publicNavWrapper.classList.toggle('mobile-active');
-            publicNavToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+            const isHidden = publicMobileDrawer.style.display === 'none' || !publicMobileDrawer.style.display;
+            publicMobileDrawer.style.display = isHidden ? 'block' : 'none';
+            publicNavToggle.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
         });
 
-        // Close menu when any navigation link or action button is clicked
-        const navInteractiveElements = publicNavWrapper.querySelectorAll('.public-nav-link, .btn');
-        navInteractiveElements.forEach(function (elem) {
+        // Close drawer when any navigation link or action button inside it is clicked
+        const drawerInteractiveElements = publicMobileDrawer.querySelectorAll('.mobile-drawer-link, .btn');
+        drawerInteractiveElements.forEach(function (elem) {
             elem.addEventListener('click', function () {
-                publicNavWrapper.classList.remove('mobile-active');
+                publicMobileDrawer.style.display = 'none';
                 publicNavToggle.setAttribute('aria-expanded', 'false');
             });
         });
 
-        // Close menu when tapping anywhere outside the navigation drawer
+        // Close drawer when tapping anywhere outside
         document.addEventListener('click', function (e) {
-            if (!publicNavWrapper.contains(e.target) && !publicNavToggle.contains(e.target)) {
-                if (publicNavWrapper.classList.contains('mobile-active')) {
-                    publicNavWrapper.classList.remove('mobile-active');
-                    publicNavToggle.setAttribute('aria-expanded', 'false');
-                }
+            if (!publicMobileDrawer.contains(e.target) && !publicNavToggle.contains(e.target)) {
+                publicMobileDrawer.style.display = 'none';
+                publicNavToggle.setAttribute('aria-expanded', 'false');
             }
         });
     }

@@ -222,7 +222,7 @@
         <!-- ========================================== -->
         <!-- GUEST & PUBLIC INSTITUTIONAL HEADER        -->
         <!-- ========================================== -->
-        <header class="public-header" role="banner">
+        <header class="public-header" role="banner" style="position: relative;">
             <div class="public-header-container">
                 <a href="{{ route('home') }}" class="public-brand" aria-label="{{ __('messages.institute_name') }}">
                     <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="public-brand-logo">
@@ -232,8 +232,9 @@
                     </div>
                 </a>
 
-                <div class="public-nav-wrapper hidden md:flex" id="public-nav-wrapper">
-                    <ul class="public-nav-links" role="navigation" aria-label="Public Navigation">
+                <!-- Desktop Navigation (Completely hidden on screens <= 1024px) -->
+                <nav class="public-desktop-nav hidden md:flex" aria-label="Desktop Navigation">
+                    <ul class="public-nav-links" role="navigation">
                         <li><a href="{{ route('home') }}" class="public-nav-link">{{ __('messages.home') }}</a></li>
                         <li><a href="{{ route('home') }}#departments" class="public-nav-link">{{ __('messages.academic_departments') }}</a></li>
                         <li><a href="{{ route('home') }}#announcements" class="public-nav-link">{{ __('messages.official_announcements') }}</a></li>
@@ -242,7 +243,7 @@
 
                     <div class="public-nav-actions">
                         <!-- Desktop Language Capsule -->
-                        <div class="language-capsule desktop-language-capsule" aria-label="Language Selector">
+                        <div class="language-capsule" aria-label="Language Selector">
                             <a href="{{ request()->fullUrlWithQuery(['lang' => 'km']) }}" class="language-btn {{ app()->getLocale() === 'km' ? 'active' : '' }}">ខ្មែរ</a>
                             <span style="color: #bdc1c6;">|</span>
                             <a href="{{ request()->fullUrlWithQuery(['lang' => 'en']) }}" class="language-btn {{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</a>
@@ -251,10 +252,10 @@
                         <a href="{{ route('login') }}" class="btn btn-outline btn-sm">{{ __('messages.login') }}</a>
                         <a href="{{ route('login') }}#register" class="btn btn-primary btn-sm">{{ __('messages.register') }}</a>
                     </div>
-                </div>
+                </nav>
 
-                <!-- Mobile Header Right Controls (Language Switcher + Mobile Drawer Hamburger) -->
-                <div class="public-mobile-controls flex md:hidden">
+                <!-- Mobile Header Right: Language Switcher + Hamburger Toggle (Hidden on desktop) -->
+                <div class="public-mobile-bar flex md:hidden">
                     <div class="language-capsule mobile-language-capsule" aria-label="Language Selector">
                         <a href="{{ request()->fullUrlWithQuery(['lang' => 'km']) }}" class="language-btn {{ app()->getLocale() === 'km' ? 'active' : '' }}">ខ្មែរ</a>
                         <span style="color: #bdc1c6;">|</span>
@@ -264,6 +265,20 @@
                     <button type="button" class="public-mobile-toggle" id="public-nav-toggle" aria-label="Toggle Public Menu" aria-expanded="false">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
+                </div>
+            </div>
+
+            <!-- Mobile Slide Drawer (Rendered outside the header row container so it NEVER expands the header width!) -->
+            <div class="public-mobile-drawer" id="public-mobile-drawer" style="display: none;">
+                <ul class="mobile-drawer-links" role="navigation" aria-label="Mobile Navigation">
+                    <li><a href="{{ route('home') }}" class="mobile-drawer-link">{{ __('messages.home') }}</a></li>
+                    <li><a href="{{ route('home') }}#departments" class="mobile-drawer-link">{{ __('messages.academic_departments') }}</a></li>
+                    <li><a href="{{ route('home') }}#announcements" class="mobile-drawer-link">{{ __('messages.official_announcements') }}</a></li>
+                    <li><a href="{{ route('home') }}#about" class="mobile-drawer-link">{{ __('messages.about_institute') }}</a></li>
+                </ul>
+                <div class="mobile-drawer-actions">
+                    <a href="{{ route('login') }}" class="btn btn-outline" style="width: 100%; text-align: center; justify-content: center; padding: 0.75rem 1rem;">{{ __('messages.login') }}</a>
+                    <a href="{{ route('login') }}#register" class="btn btn-primary" style="width: 100%; text-align: center; justify-content: center; padding: 0.75rem 1rem;">{{ __('messages.register') }}</a>
                 </div>
             </div>
         </header>

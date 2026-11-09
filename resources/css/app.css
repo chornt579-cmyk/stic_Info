@@ -1088,6 +1088,69 @@ tr:hover td {
     gap: 0.85rem;
 }
 
+.public-desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+}
+
+.public-mobile-bar {
+    display: none;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+}
+
+.public-mobile-drawer {
+    background: #ffffff;
+    border-bottom: 3px solid var(--stic-secondary);
+    box-shadow: 0 16px 32px -4px rgba(32, 41, 104, 0.16);
+    padding: 1.25rem 1.15rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    animation: slideDownNav 0.2s ease-out forwards;
+}
+
+.mobile-drawer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-drawer-link {
+    display: block;
+    padding: 0.75rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--stic-text);
+    background: var(--stic-surface-muted);
+    border: 1px solid var(--stic-border-light);
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+
+.mobile-drawer-link:hover {
+    background: var(--stic-primary-soft);
+    color: var(--stic-primary);
+    border-color: rgba(48, 58, 152, 0.2);
+}
+
+.mobile-drawer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--stic-border);
+}
+
 .public-mobile-toggle {
     display: none;
     background: transparent;
@@ -1820,39 +1883,17 @@ tr:hover td {
     }
 
     /* Hide desktop nav menu by default */
-    .public-nav-wrapper {
+    .public-desktop-nav {
         display: none !important;
     }
 
     /* Display mobile controls (Language capsule + Hamburger toggle) */
-    .public-mobile-controls {
+    .public-mobile-bar {
         display: flex !important;
     }
 
     .public-mobile-toggle {
         display: inline-flex !important;
-    }
-
-    .desktop-language-capsule {
-        display: none !important;
-    }
-
-    /* Full-width sliding drawer for public mobile menu */
-    .public-nav-wrapper.mobile-active {
-        display: flex !important;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        width: 100%;
-        background: #ffffff;
-        border-bottom: 2px solid var(--stic-secondary);
-        padding: 1.25rem 1.15rem;
-        gap: 1.25rem;
-        box-shadow: 0 16px 36px -4px rgba(32, 41, 104, 0.18);
-        z-index: 1000;
-        animation: slideDownNav 0.22s ease-out forwards;
     }
 
     .public-nav-wrapper.mobile-active .public-nav-links {
