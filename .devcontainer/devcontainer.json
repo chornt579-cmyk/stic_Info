@@ -1,6 +1,6 @@
 {
   "name": "STIC Info — Laravel Dev",
-  "image": "mcr.microsoft.com/devcontainers/php:8.2",
+  "image": "mcr.microsoft.com/devcontainers/php:8.3",
 
   // Forward Laravel port
   "forwardPorts": [8000],
@@ -9,7 +9,7 @@
   },
 
   // Setup commands
-  "postCreateCommand": "composer install && cp -n .env.example .env && php artisan key:generate && php artisan migrate --force && php artisan db:seed --force",
+  "postCreateCommand": "composer install --ignore-platform-reqs && cp -n .env.example .env && php artisan key:generate && touch database/database.sqlite && php artisan migrate:fresh --seed --force && npm install && npm run build",
   "postStartCommand": "echo '🚀 Laravel STIC Info ready! Run: php artisan serve'",
 
   "customizations": {
