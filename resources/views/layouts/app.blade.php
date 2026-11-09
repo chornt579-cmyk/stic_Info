@@ -10,6 +10,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Khmer:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="theme-color" content="#303A98">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="STIC Info">
+    <link rel="apple-touch-icon" href="{{ asset('images/stic-logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/stic-logo.png') }}">
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('styles')
 </head>
@@ -381,6 +391,21 @@
             </div>
         </footer>
     @endauth
+
+    <!-- PWA Institutional Mobile Install Banner (A2HS) -->
+    <aside id="pwa-install-banner" class="pwa-install-banner hidden" style="display: none;" role="region" aria-label="Install STIC Info Mobile Web App">
+        <div class="pwa-banner-content">
+            <img src="{{ asset('images/stic-logo.png') }}" alt="STIC Logo" class="pwa-banner-logo">
+            <div class="pwa-banner-text">
+                <span class="pwa-banner-title">ដំឡើង STIC Info លើអេក្រង់ទូរស័ព្ទ</span>
+                <span class="pwa-banner-desc">បើកប្រើប្រាស់ដូច App ធម្មតា ដោយមិនបាច់វាយ Link</span>
+            </div>
+        </div>
+        <div class="pwa-banner-actions">
+            <button type="button" id="pwa-install-btn" class="btn btn-sm btn-primary">ដំឡើង (Install)</button>
+            <button type="button" id="pwa-dismiss-btn" class="btn btn-sm btn-outline" style="border: none; color: var(--stic-muted);">ពេលក្រោយ</button>
+        </div>
+    </aside>
 
     @yield('scripts')
 </body>

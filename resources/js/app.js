@@ -4,3 +4,4 @@ import './teacher';
 import './student';
 import './layout';
 import './notifications';
+import './pwa';

@@ -1,0 +1,20 @@
+{
+  "name": "វិទ្យាស្ថានពហុបច្ចេកទេសភូមិភាគតេជោសែន សៀមរាប — STIC Info",
+  "short_name": "STIC Info",
+  "description": "ប្រព័ន្ធគ្រប់គ្រងព័ត៌មាន និងកាលវិភាគសិក្សា STIC សៀមរាប",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F8F9FC",
+  "theme_color": "#303A98",
+  "icons": [
+    {
+      "src": "/images/stic-logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"]
+}
